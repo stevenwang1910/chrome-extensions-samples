@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "网易新闻纯净阅读",
+  "description": "为网易新闻详情页面提供纯净阅读模式，隐藏广告、侧边栏、评论区等干扰元素",
+  "version": "1.0",
+  "permissions": [],
+  "content_scripts": [
+    {
+      "matches": ["*://*.163.com/dy/article/*", "*://*.163.com/news/article/*"],
+      "js": ["content-script.js"],
+      "css": ["styles.css"]
+    },
+    {
+      "matches": ["file:///*/news_page.html"],
+      "js": ["content-script.js"],
+      "css": ["styles.css"]
+    }
+  ]
+}
