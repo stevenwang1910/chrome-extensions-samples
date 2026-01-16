@@ -1,0 +1,16 @@
+.pure-reading-loaded {
+    background: #ffffff !important;
+}
+
+.pure-reading-container {
+    background: #ffffff;
+}
+
+.pure-reading-exit {
+    transition: background-color 0.2s;
+}
+
+.pure-reading-content p {
+    text-align: justify;
+    hyphens: auto;
+}
