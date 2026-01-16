@@ -1,0 +1,17 @@
+{
+  "manifest_version": 3,
+  "name": "GitHub Issues Extractor",
+  "version": "1.0",
+  "description": "Extract and display GitHub issues information in a table format",
+  "icons": {
+    "16": "images/icon-16.png",
+    "32": "images/icon-32.png",
+    "48": "images/icon-48.png",
+    "128": "images/icon-128.png"
+  },
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "host_permissions": ["https://api.github.com/*", "https://github.com/*"],
+  "permissions": ["tabs"]
+}
