@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body {
+      width: 300px;
+      padding: 15px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      margin: 0;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #e5e5e5;
+    }
+
+    .header h1 {
+      font-size: 18px;
+      margin: 0 0 5px 0;
+      color: #333;
+    }
+
+    .header p {
+      font-size: 12px;
+      margin: 0;
+      color: #666;
+    }
+
+    .status {
+      text-align: center;
+      padding: 20px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      font-weight: 500;
+    }
+
+    .status.active {
+      background-color: #e8f5e9;
+      color: #2e7d32;
+    }
+
+    .status.inactive {
+      background-color: #ffebee;
+      color: #c62828;
+    }
+
+    .button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .button.primary {
+      background-color: #1976d2;
+      color: white;
+    }
+
+    .button.primary:hover {
+      background-color: #1565c0;
+    }
+
+    .button.secondary {
+      background-color: #f5f5f5;
+      color: #333;
+      margin-top: 10px;
+    }
+
+    .button.secondary:hover {
+      background-color: #e0e0e0;
+    }
+
+    .info {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #f5f5f5;
+      border-radius: 6px;
+      font-size: 12px;
+      color: #666;
+    }
+
+    .info h3 {
+      margin: 0 0 10px 0;
+      font-size: 13px;
+      color: #333;
+    }
+
+    .info ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    .info li {
+      margin-bottom: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>网易新闻纯净阅读</h1>
+    <p>Clean Reading Mode</p>
+  </div>
+
+  <div id="status" class="status inactive">
+    纯净模式：关闭
+  </div>
+
+  <button id="toggleBtn" class="button primary">开启纯净阅读模式</button>
+  <button id="autoToggleBtn" class="button secondary">自动开启纯净模式</button>
+
+  <div class="info">
+    <h3>功能说明</h3>
+    <ul>
+      <li>隐藏广告和侧边栏</li>
+      <li>移除推荐内容和评论区</li>
+      <li>优化阅读体验</li>
+      <li>支持网易新闻详情页</li>
+    </ul>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
