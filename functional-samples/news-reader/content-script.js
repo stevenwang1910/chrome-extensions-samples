@@ -7,86 +7,158 @@ function extractContent() {
   const postBody = document.querySelector('.post_body');
   
   if (!title || !postBody) {
+    console.log('[Pure Reading] 未能找到标题或内容区域');
     return null;
   }
+  
+  console.log('[Pure Reading] 找到内容区域');
   
   // 创建新的内容容器，只保留文本内容
   const content = document.createElement('div');
   content.className = 'post_body';
   
-  // 遍历postBody的所有子节点，包括文本节点
-  const childNodes = postBody.childNodes;
-  for (let i = 0; i < childNodes.length; i++) {
-    const node = childNodes[i];
+  // 获取所有直接子元素和嵌套的元素
+  const allElements = postBody.querySelectorAll('p, img, figure, figcaption, ul, ol, li');
+  console.log('[Pure Reading] 找到元素数量:', allElements.length);
+  
+  // 使用Set来避免重复处理
+  const processedElements = new Set();
+  
+  for (let i = 0; i < allElements.length; i++) {
+    const node = allElements[i];
+    const tagName = node.tagName;
     
-    // 只保留元素节点
-    if (node.nodeType !== Node.ELEMENT_NODE) {
+    // 如果节点已经被处理过（作为父元素的子元素），跳过
+    if (processedElements.has(node)) {
       continue;
     }
     
-    const tagName = node.tagName;
+    console.log('[Pure Reading] 处理元素:', tagName);
     
-    // 只保留段落、图片和figure元素
-    if (tagName === 'P' || tagName === 'IMG' || tagName === 'FIGURE') {
-      // 深入检查p标签内容，排除脚本和样式代码
-      if (tagName === 'P') {
-        const textContent = node.textContent.trim();
-        // 排除包含CSS、JavaScript代码的段落
-        if (textContent.includes('{') && textContent.includes('}') && 
-            (textContent.includes('.') || textContent.includes('#') || 
-             textContent.includes('var') || textContent.includes('function') ||
-             textContent.includes('=') || textContent.includes(':'))) {
-          continue;
-        }
-      }
+    // 对于figure，直接处理整个figure
+    if (tagName === 'FIGURE') {
+      const clone = document.createElement('figure');
+      const figureChildren = node.querySelectorAll('img, figcaption');
       
-      // 克隆节点但不复制任何属性
-      const clone = document.createElement(node.tagName.toLowerCase());
-      
-      // 只复制文本内容（针对p标签）
-      if (tagName === 'P') {
-        clone.textContent = node.textContent;
-      } else if (tagName === 'IMG') {
-        // 对于图片，只复制src属性
-        const src = node.getAttribute('src');
-        if (src) {
-          clone.setAttribute('src', src);
-        }
-        // 可以选择性地复制其他必要属性
-        const alt = node.getAttribute('alt');
-        if (alt) {
-          clone.setAttribute('alt', alt);
-        }
-      } else if (tagName === 'FIGURE') {
-        // 对于figure标签，递归处理其子元素
-        const figureChildNodes = node.childNodes;
-        for (let j = 0; j < figureChildNodes.length; j++) {
-          const figureNode = figureChildNodes[j];
-          if (figureNode.nodeType === Node.ELEMENT_NODE) {
-            const figureClone = document.createElement(figureNode.tagName.toLowerCase());
-            if (figureNode.tagName === 'IMG') {
-              const src = figureNode.getAttribute('src');
-              if (src) {
-                figureClone.setAttribute('src', src);
-              }
-              const alt = figureNode.getAttribute('alt');
-              if (alt) {
-                figureClone.setAttribute('alt', alt);
-              }
-            } else if (figureNode.tagName === 'FIGCAPTION') {
-              figureClone.textContent = figureNode.textContent;
+      for (let j = 0; j < figureChildren.length; j++) {
+        const child = figureChildren[j];
+        processedElements.add(child);
+        
+        if (child.tagName === 'IMG') {
+          const imgClone = document.createElement('img');
+          let src = child.getAttribute('src') || child.getAttribute('data-src') || child.getAttribute('data-original');
+          if (src) {
+            try {
+              const url = new URL(src, window.location.href);
+              imgClone.setAttribute('src', url.href);
+            } catch (e) {
+              imgClone.setAttribute('src', src);
             }
-            clone.appendChild(figureClone);
           }
+          const alt = child.getAttribute('alt') || '';
+          if (alt) {
+            imgClone.setAttribute('alt', alt);
+          }
+          imgClone.style.maxWidth = '100%';
+          imgClone.style.height = 'auto';
+          imgClone.style.display = 'block';
+          imgClone.style.margin = '0 auto';
+          imgClone.style.borderRadius = '4px';
+          clone.appendChild(imgClone);
+        } else if (child.tagName === 'FIGCAPTION') {
+          const capClone = document.createElement('figcaption');
+          capClone.textContent = child.textContent;
+          capClone.style.fontSize = '14px';
+          capClone.style.color = '#666';
+          capClone.style.marginTop = '10px';
+          capClone.style.fontStyle = 'italic';
+          capClone.style.textAlign = 'center';
+          clone.appendChild(capClone);
         }
       }
       
       content.appendChild(clone);
+      continue;
+    }
+    
+    // 对于列表，直接处理整个列表
+    if (tagName === 'UL' || tagName === 'OL') {
+      // 检查是否已经作为子元素处理
+      if (node.parentNode && processedElements.has(node.parentNode)) {
+        continue;
+      }
+      
+      const clone = document.createElement(tagName.toLowerCase());
+      const items = node.querySelectorAll('li');
+      
+      for (let j = 0; j < items.length; j++) {
+        processedElements.add(items[j]);
+        const liClone = document.createElement('li');
+        liClone.textContent = items[j].textContent;
+        clone.appendChild(liClone);
+      }
+      
+      content.appendChild(clone);
+      continue;
+    }
+    
+    // 对于独立的图片
+    if (tagName === 'IMG') {
+      // 检查是否在figure中
+      if (node.closest('figure')) {
+        continue;
+      }
+      
+      const clone = document.createElement('img');
+      let src = node.getAttribute('src') || node.getAttribute('data-src') || node.getAttribute('data-original');
+      if (src) {
+        try {
+          const url = new URL(src, window.location.href);
+          clone.setAttribute('src', url.href);
+        } catch (e) {
+          clone.setAttribute('src', src);
+        }
+      }
+      const alt = node.getAttribute('alt') || '';
+      if (alt) {
+        clone.setAttribute('alt', alt);
+      }
+      clone.style.maxWidth = '100%';
+      clone.style.height = 'auto';
+      clone.style.display = 'block';
+      clone.style.margin = '30px auto';
+      clone.style.borderRadius = '4px';
+      content.appendChild(clone);
+      continue;
+    }
+    
+    // 对于段落
+    if (tagName === 'P') {
+      // 检查是否在其他元素中
+      if (node.closest('figure, ul, ol')) {
+        continue;
+      }
+      
+      const textContent = node.textContent.trim();
+      // 排除包含CSS、JavaScript代码的段落
+      if (textContent.includes('{') && textContent.includes('}') && 
+          (textContent.includes('.') || textContent.includes('#') || 
+           textContent.includes('var') || textContent.includes('function') ||
+           textContent.includes('=') || textContent.includes(':'))) {
+        continue;
+      }
+      
+      if (textContent) {
+        const clone = document.createElement('p');
+        clone.textContent = node.textContent;
+        content.appendChild(clone);
+      }
     }
   }
   
   // 如果没有提取到内容，尝试直接获取文本
   if (content.children.length === 0) {
+    console.log('[Pure Reading] 没有找到任何有效内容');
     const text = postBody.textContent.trim();
     if (text) {
       const p = document.createElement('p');
@@ -112,7 +184,7 @@ function enterPureMode() {
   
   // 完全清空body
   document.body.innerHTML = '';
-  document.body.style.cssText = 'margin: 0; padding: 0; background: #f5f5f5; font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', \'PingFang SC\', \'Hiragino Sans GB\', \'Microsoft YaHei\', \'Helvetica Neue\', Helvetica, Arial, sans-serif;';
+  document.body.style.cssText = 'margin: 0; padding: 0; background: #f5f5f5; font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', \'PingFang SC\', \'Hiragino Sans GB\', \'Microsoft YaHei\', \'Helvetica Neue\', Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;';
   
   // 创建纯净阅读容器
   const pureContainer = document.createElement('div');
