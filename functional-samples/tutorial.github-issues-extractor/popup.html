@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./popup.css" />
+  </head>
+  <body>
+    <h1>GitHub Issues Extractor</h1>
+    <div class="container">
+      <div class="info">
+        <p>Open the GitHub issues page and click the button below to extract issues.</p>
+        <a href="https://github.com/GoogleChrome/chrome-extensions-samples/issues" target="_blank">
+          Open GitHub Issues Page
+        </a>
+      </div>
+      <button id="extractBtn">Extract Issues</button>
+      <div id="loading" class="hidden">Loading...</div>
+      <div id="error" class="error hidden"></div>
+      <div id="tableContainer" class="hidden">
+        <table id="issuesTable">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Title</th>
+              <th>Author</th>
+              <th>Date</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+    <script src="./popup.js" type="module"></script>
+  </body>
+</html>
