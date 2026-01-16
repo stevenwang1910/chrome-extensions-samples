@@ -26,8 +26,12 @@ function extractContent() {
     
     const tagName = node.tagName;
     
-    // 只保留段落、图片和figure元素
-    if (tagName === 'P' || tagName === 'IMG' || tagName === 'FIGURE') {
+    // 保留段落、图片、figure元素和格式元素
+    if (tagName === 'P' || tagName === 'IMG' || tagName === 'FIGURE' || 
+        tagName === 'STRONG' || tagName === 'EM' || tagName === 'B' || tagName === 'I' ||
+        tagName === 'A' || tagName === 'BR' || tagName === 'UL' || tagName === 'OL' || 
+        tagName === 'LI' || tagName === 'BLOCKQUOTE' || tagName === 'H2' || tagName === 'H3') {
+      
       // 深入检查p标签内容，排除脚本和样式代码
       if (tagName === 'P') {
         const textContent = node.textContent.trim();
@@ -43,16 +47,39 @@ function extractContent() {
       // 克隆节点但不复制任何属性
       const clone = document.createElement(node.tagName.toLowerCase());
       
-      // 只复制文本内容（针对p标签）
-      if (tagName === 'P') {
+      // 处理不同类型的元素
+      if (tagName === 'P' || tagName === 'LI' || tagName === 'BLOCKQUOTE' || 
+          tagName === 'H2' || tagName === 'H3') {
+        // 递归处理子元素，保留格式
+        processChildNodes(node, clone);
+      } else if (tagName === 'STRONG' || tagName === 'B') {
         clone.textContent = node.textContent;
+        clone.style.fontWeight = '600';
+      } else if (tagName === 'EM' || tagName === 'I') {
+        clone.textContent = node.textContent;
+        clone.style.fontStyle = 'italic';
+      } else if (tagName === 'A') {
+        clone.textContent = node.textContent;
+        const href = node.getAttribute('href');
+        if (href) {
+          clone.setAttribute('href', href);
+          clone.setAttribute('target', '_blank');
+        }
+      } else if (tagName === 'BR') {
+        clone.setAttribute('clear', 'all');
       } else if (tagName === 'IMG') {
-        // 对于图片，只复制src属性
-        const src = node.getAttribute('src');
+        // 对于图片，处理懒加载情况
+        let src = node.getAttribute('src');
+        // 检查懒加载属性
+        if (!src || src.includes('placeholder')) {
+          src = node.getAttribute('data-src') || 
+                node.getAttribute('data-original') || 
+                node.getAttribute('data-lazy-src') ||
+                node.getAttribute('data-url');
+        }
         if (src) {
           clone.setAttribute('src', src);
         }
-        // 可以选择性地复制其他必要属性
         const alt = node.getAttribute('alt');
         if (alt) {
           clone.setAttribute('alt', alt);
@@ -65,7 +92,14 @@ function extractContent() {
           if (figureNode.nodeType === Node.ELEMENT_NODE) {
             const figureClone = document.createElement(figureNode.tagName.toLowerCase());
             if (figureNode.tagName === 'IMG') {
-              const src = figureNode.getAttribute('src');
+              let src = figureNode.getAttribute('src');
+              // 检查懒加载属性
+              if (!src || src.includes('placeholder')) {
+                src = figureNode.getAttribute('data-src') || 
+                      figureNode.getAttribute('data-original') || 
+                      figureNode.getAttribute('data-lazy-src') ||
+                      figureNode.getAttribute('data-url');
+              }
               if (src) {
                 figureClone.setAttribute('src', src);
               }
@@ -79,25 +113,86 @@ function extractContent() {
             clone.appendChild(figureClone);
           }
         }
+      } else if (tagName === 'UL' || tagName === 'OL') {
+        // 递归处理列表项
+        const listItems = node.querySelectorAll('li');
+        listItems.forEach(li => {
+          const liClone = document.createElement('li');
+          processChildNodes(li, liClone);
+          clone.appendChild(liClone);
+        });
       }
       
       content.appendChild(clone);
     }
   }
   
-  // 如果没有提取到内容，尝试直接获取文本
-  if (content.children.length === 0) {
-    const text = postBody.textContent.trim();
-    if (text) {
-      const p = document.createElement('p');
-      p.textContent = text;
-      content.appendChild(p);
-    } else {
-      return null;
+  return { title, content };
+}
+
+function processChildNodes(parentNode, targetNode) {
+  const childNodes = parentNode.childNodes;
+  for (let i = 0; i < childNodes.length; i++) {
+    const node = childNodes[i];
+    
+    if (node.nodeType === Node.TEXT_NODE) {
+      const text = node.textContent;
+      if (text.trim()) {
+        targetNode.appendChild(document.createTextNode(text));
+      }
+    } else if (node.nodeType === Node.ELEMENT_NODE) {
+      const tagName = node.tagName;
+      
+      // 保留格式元素
+      if (tagName === 'STRONG' || tagName === 'B') {
+        const strong = document.createElement('strong');
+        strong.textContent = node.textContent;
+        strong.style.fontWeight = '600';
+        targetNode.appendChild(strong);
+      } else if (tagName === 'EM' || tagName === 'I') {
+        const em = document.createElement('em');
+        em.textContent = node.textContent;
+        em.style.fontStyle = 'italic';
+        targetNode.appendChild(em);
+      } else if (tagName === 'A') {
+        const a = document.createElement('a');
+        a.textContent = node.textContent;
+        const href = node.getAttribute('href');
+        if (href) {
+          a.setAttribute('href', href);
+          a.setAttribute('target', '_blank');
+        }
+        targetNode.appendChild(a);
+      } else if (tagName === 'BR') {
+        const br = document.createElement('br');
+        targetNode.appendChild(br);
+      } else if (tagName === 'IMG') {
+        // 处理图片
+        let src = node.getAttribute('src');
+        if (!src || src.includes('placeholder')) {
+          src = node.getAttribute('data-src') || 
+                node.getAttribute('data-original') || 
+                node.getAttribute('data-lazy-src') ||
+                node.getAttribute('data-url');
+        }
+        if (src) {
+          const img = document.createElement('img');
+          img.setAttribute('src', src);
+          const alt = node.getAttribute('alt');
+          if (alt) {
+            img.setAttribute('alt', alt);
+          }
+          targetNode.appendChild(img);
+        }
+      } else if (tagName === 'SPAN') {
+        // 递归处理span
+        processChildNodes(node, targetNode);
+      } else {
+        // 其他元素，递归处理
+        processChildNodes(node, targetNode);
+      }
     }
   }
-  
-  return { title, content };
 }
 
 function enterPureMode() {
@@ -158,6 +253,23 @@ function addToggleButton() {
   const toggleBtn = document.createElement('button');
   toggleBtn.id = 'pure-reading-toggle';
   toggleBtn.textContent = '退出纯净模式';
+  toggleBtn.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 999999;
+    padding: 12px 24px;
+    background: #ff6600;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    box-shadow: 0 4px 12px rgba(255, 102, 0, 0.3);
+    transition: all 0.3s ease;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  `;
   toggleBtn.addEventListener('click', exitPureMode);
   
   document.body.appendChild(toggleBtn);
