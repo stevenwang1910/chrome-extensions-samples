@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Issues Extractor</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <div class="container">
+        <h1>GitHub Issues Extractor</h1>
+        <button id="extractBtn" class="extract-btn">Extract Issues</button>
+        <div id="loading" class="loading hidden">
+            <div class="spinner"></div>
+            <p>Extracting issues...</p>
+        </div>
+        <div id="results" class="results hidden">
+            <h2>Extracted Issues</h2>
+            <table id="issuesTable" class="issues-table">
+                <thead>
+                    <tr>
+                        <th>Issue ID</th>
+                        <th>Status</th>
+                        <th>Title</th>
+                        <th>Author</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                </tbody>
+            </table>
+        </div>
+        <div id="error" class="error hidden">
+            <p>Error extracting issues. Please make sure you're on the GitHub issues page.</p>
+        </div>
+    </div>
+    <script src="popup.js"></script>
+</body>
+</html>
