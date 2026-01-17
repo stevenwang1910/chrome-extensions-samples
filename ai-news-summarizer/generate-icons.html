@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>生成图标</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .icon-container {
+            display: flex;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .icon-wrapper {
+            text-align: center;
+        }
+        canvas {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        button {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px;
+        }
+        button:hover {
+            opacity: 0.9;
+        }
+        h1 {
+            color: #333;
+        }
+        p {
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <h1>AI新闻总结小助手 - 图标生成器</h1>
+    <p>点击下方按钮下载不同尺寸的图标</p>
+    
+    <div class="icon-container">
+        <div class="icon-wrapper">
+            <canvas id="icon16" width="16" height="16"></canvas>
+            <br>
+            <button onclick="downloadIcon('icon16', 'icon16.png')">下载 16x16</button>
+        </div>
+        <div class="icon-wrapper">
+            <canvas id="icon48" width="48" height="48"></canvas>
+            <br>
+            <button onclick="downloadIcon('icon48', 'icon48.png')">下载 48x48</button>
+        </div>
+        <div class="icon-wrapper">
+            <canvas id="icon128" width="128" height="128"></canvas>
+            <br>
+            <button onclick="downloadIcon('icon128', 'icon128.png')">下载 128x128</button>
+        </div>
+    </div>
+    
+    <script>
+        function drawIcon(canvasId, size) {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext('2d');
+            
+            // 创建渐变背景
+            const gradient = ctx.createLinearGradient(0, 0, size, size);
+            gradient.addColorStop(0, '#667eea');
+            gradient.addColorStop(1, '#764ba2');
+            
+            // 绘制圆角矩形背景
+            const radius = size * 0.15;
+            ctx.beginPath();
+            ctx.moveTo(radius, 0);
+            ctx.lineTo(size - radius, 0);
+            ctx.quadraticCurveTo(size, 0, size, radius);
+            ctx.lineTo(size, size - radius);
+            ctx.quadraticCurveTo(size, size, size - radius, size);
+            ctx.lineTo(radius, size);
+            ctx.quadraticCurveTo(0, size, 0, size - radius);
+            ctx.lineTo(0, radius);
+            ctx.quadraticCurveTo(0, 0, radius, 0);
+            ctx.closePath();
+            ctx.fillStyle = gradient;
+            ctx.fill();
+            
+            // 绘制"AI"文字
+            ctx.fillStyle = 'white';
+            ctx.font = `bold ${size * 0.5}px Arial, sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('AI', size / 2, size * 0.55);
+            
+            // 绘制波浪线
+            ctx.strokeStyle = 'white';
+            ctx.lineWidth = size * 0.03;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            
+            const waveY = size * 0.75;
+            const waveStartX = size * 0.25;
+            const waveEndX = size * 0.75;
+            
+            ctx.beginPath();
+            ctx.moveTo(waveStartX, waveY);
+            ctx.quadraticCurveTo(waveStartX + size * 0.08, waveY - size * 0.05, waveStartX + size * 0.16, waveY);
+            ctx.quadraticCurveTo(waveStartX + size * 0.24, waveY + size * 0.05, waveStartX + size * 0.32, waveY);
+            ctx.quadraticCurveTo(waveStartX + size * 0.4, waveY - size * 0.05, waveStartX + size * 0.48, waveY);
+            ctx.quadraticCurveTo(waveStartX + size * 0.56, waveY + size * 0.05, waveStartX + size * 0.64, waveY);
+            ctx.quadraticCurveTo(waveStartX + size * 0.72, waveY - size * 0.05, waveStartX + size * 0.8, waveY);
+            ctx.stroke();
+        }
+        
+        function downloadIcon(canvasId, filename) {
+            const canvas = document.getElementById(canvasId);
+            const link = document.createElement('a');
+            link.download = filename;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+        
+        // 绘制所有图标
+        drawIcon('icon16', 16);
+        drawIcon('icon48', 48);
+        drawIcon('icon128', 128);
+    </script>
+</body>
+</html>
