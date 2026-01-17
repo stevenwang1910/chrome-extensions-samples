@@ -1,0 +1,138 @@
+/* popup.css - 弹出窗口样式 */
+
+body {
+  width: 400px;
+  min-height: 300px;
+  margin: 0;
+  padding: 16px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background-color: #f5f5f5;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.header {
+  text-align: center;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 18px;
+  color: #333;
+}
+
+.header p {
+  margin: 8px 0 0;
+  font-size: 12px;
+  color: #666;
+}
+
+.article-title {
+  padding: 12px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.article-title h2 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  line-height: 1.5;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.summary-container {
+  min-height: 120px;
+  padding: 12px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.summary-content {
+  font-size: 13px;
+  line-height: 1.6;
+  color: #444;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.summary-content.loading {
+  color: #888;
+  font-style: italic;
+}
+
+.summary-content.error {
+  color: #e74c3c;
+}
+
+.controls {
+  display: flex;
+  gap: 8px;
+}
+
+.button {
+  flex: 1;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.button-primary {
+  background-color: #4CAF50;
+  color: #fff;
+}
+
+.button-primary:hover {
+  background-color: #45a049;
+}
+
+.button-primary:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.button-secondary {
+  background-color: #2196F3;
+  color: #fff;
+}
+
+.button-secondary:hover {
+  background-color: #1976D2;
+}
+
+.button-secondary:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.settings-link {
+  text-align: center;
+  margin-top: 8px;
+}
+
+.settings-link a {
+  font-size: 12px;
+  color: #666;
+  text-decoration: none;
+}
+
+.settings-link a:hover {
+  text-decoration: underline;
+}
