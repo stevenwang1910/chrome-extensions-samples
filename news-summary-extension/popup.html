@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI新闻总结小助手</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      width: 420px;
+      min-height: 500px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .container {
+      padding: 20px;
+    }
+
+    .header {
+      text-align: center;
+      color: white;
+      margin-bottom: 20px;
+    }
+
+    .header h1 {
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .header p {
+      font-size: 13px;
+      opacity: 0.9;
+    }
+
+    .status-card {
+      background: white;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .status-card h3 {
+      font-size: 14px;
+      color: #667eea;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .status-card p {
+      font-size: 13px;
+      color: #666;
+      line-height: 1.5;
+    }
+
+    .status-card .url {
+      font-size: 12px;
+      color: #999;
+      word-break: break-all;
+      margin-top: 4px;
+    }
+
+    .summary-card {
+      background: white;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      min-height: 150px;
+      display: none;
+    }
+
+    .summary-card.show {
+      display: block;
+    }
+
+    .summary-card h3 {
+      font-size: 14px;
+      color: #667eea;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .summary-card .summary-content {
+      font-size: 14px;
+      color: #333;
+      line-height: 1.6;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .summary-card .summary-content p {
+      margin-bottom: 8px;
+    }
+
+    .summary-card .source-info {
+      font-size: 12px;
+      color: #999;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid #eee;
+    }
+
+    .loading-card {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      display: none;
+    }
+
+    .loading-card.show {
+      display: block;
+    }
+
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #667eea;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 16px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .loading-card p {
+      font-size: 14px;
+      color: #666;
+    }
+
+    .error-card {
+      background: #fff5f5;
+      border: 1px solid #fed7d7;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    .error-card.show {
+      display: block;
+    }
+
+    .error-card h3 {
+      font-size: 14px;
+      color: #c53030;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .error-card p {
+      font-size: 13px;
+      color: #742a2a;
+      line-height: 1.5;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 12px 16px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+      background: white;
+      color: #667eea;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-primary:hover {
+      background: #f0f0f0;
+      transform: translateY(-1px);
+    }
+
+    .btn-primary:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .footer {
+      text-align: center;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .footer a {
+      color: white;
+      text-decoration: none;
+      font-size: 13px;
+      opacity: 0.9;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+
+    .no-news-card {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      display: none;
+    }
+
+    .no-news-card.show {
+      display: block;
+    }
+
+    .no-news-card .icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+
+    .no-news-card h3 {
+      font-size: 16px;
+      color: #333;
+      margin-bottom: 8px;
+    }
+
+    .no-news-card p {
+      font-size: 13px;
+      color: #666;
+    }
+
+    .config-indicator {
+      font-size: 12px;
+      color: white;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 4px 8px;
+      border-radius: 12px;
+      display: inline-block;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>📰 AI新闻总结小助手</h1>
+      <p>智能提取并总结当前页面的新闻内容</p>
+      <div id="configIndicator" class="config-indicator"></div>
+    </div>
+
+    <div id="statusCard" class="status-card">
+      <h3>📄 当前页面</h3>
+      <p id="pageTitle">加载中...</p>
+      <div id="pageUrl" class="url"></div>
+    </div>
+
+    <div id="noNewsCard" class="no-news-card">
+      <div class="icon">📵</div>
+      <h3>不支持的页面</h3>
+      <p>请在网易新闻页面使用本扩展</p>
+    </div>
+
+    <div id="loadingCard" class="loading-card">
+      <div class="loading-spinner"></div>
+      <p>正在提取新闻内容并生成摘要...</p>
+    </div>
+
+    <div id="errorCard" class="error-card">
+      <h3>❌ 错误</h3>
+      <p id="errorMessage"></p>
+    </div>
+
+    <div id="summaryCard" class="summary-card">
+      <h3>📝 新闻摘要</h3>
+      <div id="summaryContent" class="summary-content"></div>
+      <div class="source-info">
+        <strong>原文标题：</strong><span id="originalTitle"></span>
+      </div>
+    </div>
+
+    <div class="action-buttons">
+      <button id="summarizeBtn" class="btn btn-primary">📊 生成摘要</button>
+      <button id="configBtn" class="btn btn-secondary">⚙️ 配置</button>
+    </div>
+
+    <div class="footer">
+      <a href="#" id="openOptions">API配置页面</a>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
