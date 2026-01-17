@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI News Summarizer Settings</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        .api-provider {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        .api-provider h3 {
+            margin-top: 0;
+        }
+        .form-group {
+            margin-bottom: 10px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input[type="text"],
+        .form-group input[type="password"],
+        .form-group input[type="url"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .status {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .status.success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .status.error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <h1>AI News Summarizer Settings</h1>
+    
+    <div class="api-provider">
+        <h3>API Provider 1 (OpenAI Compatible)</h3>
+        <div class="form-group">
+            <label for="provider1-name">Provider Name:</label>
+            <input type="text" id="provider1-name" placeholder="e.g., OpenAI">
+        </div>
+        <div class="form-group">
+            <label for="provider1-api-url">API URL:</label>
+            <input type="url" id="provider1-api-url" placeholder="https://api.openai.com/v1/chat/completions">
+        </div>
+        <div class="form-group">
+            <label for="provider1-api-key">API Key:</label>
+            <input type="password" id="provider1-api-key">
+        </div>
+        <div class="form-group">
+            <label for="provider1-model">Model:</label>
+            <input type="text" id="provider1-model" placeholder="gpt-4o-mini">
+        </div>
+        <div class="form-group">
+            <label for="provider1-max-tokens">Max Tokens:</label>
+            <input type="text" id="provider1-max-tokens" placeholder="100" value="100">
+        </div>
+    </div>
+
+    <div class="api-provider">
+        <h3>API Provider 2</h3>
+        <div class="form-group">
+            <label for="provider2-name">Provider Name:</label>
+            <input type="text" id="provider2-name" placeholder="e.g., DeepSeek">
+        </div>
+        <div class="form-group">
+            <label for="provider2-api-url">API URL:</label>
+            <input type="url" id="provider2-api-url">
+        </div>
+        <div class="form-group">
+            <label for="provider2-api-key">API Key:</label>
+            <input type="password" id="provider2-api-key">
+        </div>
+        <div class="form-group">
+            <label for="provider2-model">Model:</label>
+            <input type="text" id="provider2-model">
+        </div>
+        <div class="form-group">
+            <label for="provider2-max-tokens">Max Tokens:</label>
+            <input type="text" id="provider2-max-tokens" placeholder="100" value="100">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="default-provider">Default Provider:</label>
+        <select id="default-provider">
+            <option value="1">Provider 1</option>
+            <option value="2">Provider 2</option>
+        </select>
+    </div>
+
+    <button id="save-btn">Save Settings</button>
+    <button id="reset-btn">Reset to Default</button>
+    
+    <div id="status" class="status"></div>
+
+    <script src="options.js"></script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "AI News Summarizer",
+  "version": "1.0",
+  "description": "Summarize news articles using AI models",
+  "permissions": ["storage", "activeTab", "scripting"],
+  "host_permissions": ["*://*.163.com/*"],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "options_page": "options.html",
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*.163.com/*"],
+      "js": ["content.js"]
+    }
+  ]
+}
