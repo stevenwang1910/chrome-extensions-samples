@@ -1,8 +1,15 @@
-document.addEventListener('DOMContentLoaded', function() {
+function loadIssues() {
+  console.log('loadIssues called');
+  document.getElementById('loading').style.display = 'block';
+  document.getElementById('content').style.display = 'none';
+  document.getElementById('debug').style.display = 'none';
+  
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
     const tab = tabs[0];
-    if (!tab.url.includes('github.com/GoogleChrome/chrome-extensions-samples/issues')) {
-      document.getElementById('loading').textContent = 'Please navigate to GitHub issues page';
+    console.log('Current tab:', tab ? tab.url : 'No tab');
+    
+    if (!tab || !tab.url.includes('github.com') || !tab.url.includes('/issues')) {
+      document.getElementById('loading').textContent = 'Please navigate to a GitHub issues page';
       return;
     }
 
@@ -10,11 +17,15 @@ document.addEventListener('DOMContentLoaded', function() {
       target: {tabId: tab.id},
       function: extractIssues
     }, function(results) {
+      console.log('Script execution results:', results);
       document.getElementById('loading').style.display = 'none';
       document.getElementById('content').style.display = 'block';
       
       const issues = results[0].result;
+      console.log('Extracted issues:', issues.length);
+      
       const tbody = document.querySelector('#issuesTable tbody');
+      tbody.innerHTML = '';
       
       // Show debug info
       const debugDiv = document.getElementById('debug');
@@ -37,34 +48,88 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     });
   });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  loadIssues();
+  
+  const refreshButton = document.getElementById('refreshButton');
+  if (refreshButton) {
+    refreshButton.addEventListener('click', function() {
+      loadIssues();
+    });
+  }
 });
 
 function extractIssues() {
   console.log('extractIssues called');
   const issues = [];
   
-  // Try to find issues using various approaches
+  // Approach 1: Extract from React embedded data (current GitHub approach)
+  const embeddedDataScript = document.querySelector('script[type="application/json"][data-target="react-app.embeddedData"]');
   
-  // Approach 1: Check if page is static HTML from the saved file
-  const bodyText = document.body.textContent || '';
-  const issueRegex = /Status: ([^\n]+)\.\s*#(\d+)\s+In GoogleChrome\/chrome-extensions-samples;\s*·\s*(\S+)\s+opened\s+on\s+(\w+ \d+, \d+)/g;
-  
-  let match;
-  while ((match = issueRegex.exec(bodyText)) !== null) {
-    issues.push({
-      id: '#' + match[2],
-      status: match[1],
-      title: 'Issue #' + match[2],
-      author: match[3],
-      date: match[4]
-    });
+  if (embeddedDataScript) {
+    console.log('Found embedded data script');
+    try {
+      const embeddedData = JSON.parse(embeddedDataScript.textContent);
+      
+      // Check if payload has the issue data structure
+      if (embeddedData.payload && embeddedData.payload.preloadedQueries) {
+        console.log('Found preloadedQueries:', embeddedData.payload.preloadedQueries.length);
+        
+        // Iterate through preloaded queries to find issue data
+        embeddedData.payload.preloadedQueries.forEach(query => {
+          if (query.result && query.result.data && query.result.data.repository) {
+            const repo = query.result.data.repository;
+            
+            // Check if search contains issues
+            if (repo.search && repo.search.edges) {
+              console.log('Found search edges:', repo.search.edges.length);
+              
+              repo.search.edges.forEach(edge => {
+                if (edge.node && edge.node.__typename === 'Issue') {
+                  const issue = edge.node;
+                  issues.push({
+                    id: '#' + issue.number,
+                    status: issue.state === 'OPEN' ? 'Open' : 'Closed',
+                    title: issue.title,
+                    author: issue.author ? issue.author.login : 'Unknown',
+                    date: issue.createdAt ? issue.createdAt.split('T')[0] : 'Unknown'
+                  });
+                }
+              });
+            }
+            
+            // Also check pinned issues
+            if (repo.pinnedIssues && repo.pinnedIssues.nodes) {
+              console.log('Found pinned issues:', repo.pinnedIssues.nodes.length);
+              
+              repo.pinnedIssues.nodes.forEach(issue => {
+                if (issue && issue.__typename === 'Issue') {
+                  issues.push({
+                    id: '#' + issue.number,
+                    status: issue.state === 'OPEN' ? 'Open' : 'Closed',
+                    title: issue.title,
+                    author: issue.author ? issue.author.login : 'Unknown',
+                    date: issue.createdAt ? issue.createdAt.split('T')[0] : 'Unknown'
+                  });
+                }
+              });
+            }
+          }
+        });
+      }
+      
+      console.log('Found', issues.length, 'issues from embedded data');
+    } catch (error) {
+      console.error('Error parsing embedded data:', error);
+    }
   }
   
-  console.log('Found', issues.length, 'issues using regex approach');
-  
-  // If no issues found with regex, try DOM approach
+  // If no issues found from embedded data, try DOM approach (fallback)
   if (issues.length === 0) {
-    // Try multiple selectors to find issue elements
+    console.log('No issues from embedded data, trying DOM approach');
+    
     const selectors = [
       'div.js-issue-row',
       'div.js-discussion-item',
@@ -82,12 +147,10 @@ function extractIssues() {
       allElements = allElements.concat(Array.from(elements));
     });
     
-    // Remove duplicates
     const uniqueElements = [...new Set(allElements)];
     console.log('Total unique elements:', uniqueElements.length);
     
     uniqueElements.forEach(element => {
-      // Try multiple ways to find each element
       const titleElement = 
         element.querySelector('a.js-issue-title') || 
         element.querySelector('a[data-hovercard-type="issue"]') ||
