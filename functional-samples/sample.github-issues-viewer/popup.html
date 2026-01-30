@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./popup.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>GitHub Issues</h1>
+      <p class="subtitle">Chrome Extensions Samples Repository</p>
+      
+      <div class="controls">
+        <label>
+          Status:
+          <select id="statusFilter">
+            <option value="all">All</option>
+            <option value="open">Open</option>
+            <option value="closed">Closed</option>
+          </select>
+        </label>
+        <button id="refreshBtn">Refresh</button>
+      </div>
+
+      <div class="loading" id="loading">Loading issues...</div>
+      
+      <div class="error" id="error"></div>
+      
+      <table id="issuesTable">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Date</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="issuesBody"></tbody>
+      </table>
+    </div>
+
+    <script src="./popup.js"></script>
+  </body>
+</html>
