@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GitHub Issues Extractor</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>GitHub Issues Extractor</h1>
+      <div class="status-message">
+        <p id="status-text">Loading issues data...</p>
+        <p id="last-updated"></p>
+      </div>
+    </header>
+    
+    <main>
+      <div class="controls">
+        <button id="refresh-btn">Refresh Data</button>
+        <button id="export-btn">Export to CSV</button>
+        <div class="filter-container">
+          <label for="status-filter">Filter by Status:</label>
+          <select id="status-filter">
+            <option value="all">All</option>
+            <option value="open">Open</option>
+            <option value="closed">Closed</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="table-container">
+        <table id="issues-table">
+          <thead>
+            <tr>
+              <th>Issue ID</th>
+              <th>Title</th>
+              <th>Author</th>
+              <th>Submitted Date</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="issues-tbody">
+            <!-- Issues data will be populated here -->
+          </tbody>
+        </table>
+      </div>
+      
+      <div id="no-data" class="hidden">
+        <p>No issues data available. Please visit the GitHub issues page first.</p>
+        <a href="https://github.com/GoogleChrome/chrome-extensions-samples/issues" target="_blank">Open GitHub Issues</a>
+      </div>
+    </main>
+  </div>
+  
+  <script src="popup.js"></script>
+</body>
+</html>
