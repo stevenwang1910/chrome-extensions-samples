@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "网易新闻纯净阅读模式",
+  "version": "1.0.0",
+  "description": "自动清理网易新闻详情页面的干扰元素，提供纯净的阅读体验",
+  "permissions": [],
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.163.com/dy/article/*.html",
+        "*://*.163.com/news/article/*.html",
+        "*://*.163.com/*/article/*.html"
+      ],
+      "js": ["content.js"],
+      "css": ["reader.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}
