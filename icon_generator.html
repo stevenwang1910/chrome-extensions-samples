@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图标生成器</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            text-align: center;
+        }
+        canvas {
+            border: 1px solid #ccc;
+            margin: 10px;
+        }
+        .icon-container {
+            display: inline-block;
+            margin: 10px;
+            text-align: center;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #c0392b;
+        }
+    </style>
+</head>
+<body>
+    <h1>网易新闻纯净阅读模式 - 图标生成器</h1>
+    
+    <div class="icon-container">
+        <h3>16x16 像素</h3>
+        <canvas id="canvas16" width="16" height="16"></canvas>
+        <br>
+        <button id="download16">下载 icon16.png</button>
+    </div>
+    
+    <div class="icon-container">
+        <h3>48x48 像素</h3>
+        <canvas id="canvas48" width="48" height="48"></canvas>
+        <br>
+        <button id="download48">下载 icon48.png</button>
+    </div>
+    
+    <div class="icon-container">
+        <h3>128x128 像素</h3>
+        <canvas id="canvas128" width="128" height="128"></canvas>
+        <br>
+        <button id="download128">下载 icon128.png</button>
+    </div>
+
+    <script>
+        // 绘制图标的函数
+        function drawIcon(canvas, size) {
+            const ctx = canvas.getContext('2d');
+            const scale = size / 128;
+            
+            // 清空画布
+            ctx.clearRect(0, 0, size, size);
+            
+            // 绘制背景矩形
+            ctx.fillStyle = '#e74c3c';
+            ctx.beginPath();
+            ctx.roundRect(0, 0, size, size, 16 * scale);
+            ctx.fill();
+            
+            // 绘制白色矩形
+            ctx.fillStyle = 'white';
+            const rectX = 30 * scale;
+            const rectY = 35 * scale;
+            const rectWidth = 68 * scale;
+            const rectHeight = 58 * scale;
+            ctx.beginPath();
+            ctx.roundRect(rectX, rectY, rectWidth, rectHeight, 4 * scale);
+            ctx.fill();
+            
+            // 绘制红色线条
+            ctx.fillStyle = '#e74c3c';
+            const lineHeight = 4 * scale;
+            const lineSpacing = 10 * scale;
+            const lineStartX = 35 * scale;
+            const lineWidth = 58 * scale;
+            
+            // 第一条线
+            ctx.fillRect(lineStartX, (45 * scale), lineWidth, lineHeight);
+            // 第二条线
+            ctx.fillRect(lineStartX, (55 * scale), lineWidth, lineHeight);
+            // 第三条线
+            ctx.fillRect(lineStartX, (65 * scale), lineWidth, lineHeight);
+            // 第四条线（短一些）
+            ctx.fillRect(lineStartX, (75 * scale), 40 * scale, lineHeight);
+            
+            // 绘制星星
+            ctx.fillStyle = 'white';
+            ctx.beginPath();
+            ctx.arc(104 * scale, 24 * scale, 8 * scale, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            // 绘制星星内部
+            ctx.fillStyle = '#e74c3c';
+            drawStar(ctx, 104 * scale, 20 * scale, 5, 4 * scale, 2 * scale);
+        }
+        
+        // 绘制星星的函数
+        function drawStar(ctx, cx, cy, spikes, outerRadius, innerRadius) {
+            let rot = Math.PI / 2 * 3;
+            let x = cx;
+            let y = cy;
+            const step = Math.PI / spikes;
+            
+            ctx.beginPath();
+            ctx.moveTo(cx, cy - outerRadius);
+            
+            for (let i = 0; i < spikes; i++) {
+                x = cx + Math.cos(rot) * outerRadius;
+                y = cy + Math.sin(rot) * outerRadius;
+                ctx.lineTo(x, y);
+                rot += step;
+                
+                x = cx + Math.cos(rot) * innerRadius;
+                y = cy + Math.sin(rot) * innerRadius;
+                ctx.lineTo(x, y);
+                rot += step;
+            }
+            
+            ctx.lineTo(cx, cy - outerRadius);
+            ctx.closePath();
+            ctx.fill();
+        }
+        
+        // 下载图标的函数
+        function downloadIcon(canvas, filename) {
+            const link = document.createElement('a');
+            link.download = filename;
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+        
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 绘制所有尺寸的图标
+            drawIcon(document.getElementById('canvas16'), 16);
+            drawIcon(document.getElementById('canvas48'), 48);
+            drawIcon(document.getElementById('canvas128'), 128);
+            
+            // 添加下载事件
+            document.getElementById('download16').addEventListener('click', function() {
+                downloadIcon(document.getElementById('canvas16'), 'icon16.png');
+            });
+            
+            document.getElementById('download48').addEventListener('click', function() {
+                downloadIcon(document.getElementById('canvas48'), 'icon48.png');
+            });
+            
+            document.getElementById('download128').addEventListener('click', function() {
+                downloadIcon(document.getElementById('canvas128'), 'icon128.png');
+            });
+        });
+    </script>
+</body>
+</html>

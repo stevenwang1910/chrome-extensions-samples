@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>网易新闻纯净阅读模式测试页面</title>
+    <style>
+        body {
+            font-family: "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            min-height: 100vh;
+        }
+        .header {
+            background-color: #c20c0c;
+            color: white;
+            padding: 15px 0;
+            margin-bottom: 20px;
+        }
+        .nav {
+            background-color: #f2f2f2;
+            padding: 10px 0;
+            margin-bottom: 20px;
+        }
+        .sidebar {
+            float: right;
+            width: 300px;
+            background-color: #f9f9f9;
+            padding: 15px;
+            margin-left: 20px;
+        }
+        .main-content {
+            overflow: hidden;
+        }
+        .ad {
+            background-color: #ffeb3b;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .post_title {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .post_info {
+            color: #888;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        .post_body {
+            font-size: 16px;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+        .post_body p {
+            margin-bottom: 16px;
+            text-indent: 2em;
+        }
+        .post_body img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+        }
+        .recommend {
+            background-color: #f5f5f5;
+            padding: 15px;
+            margin-top: 30px;
+        }
+        .comment {
+            background-color: #f9f9f9;
+            padding: 15px;
+            margin-top: 30px;
+        }
+        .footer {
+            background-color: #333;
+            color: white;
+            padding: 20px 0;
+            margin-top: 30px;
+            text-align: center;
+        }
+        .share {
+            background-color: #e3f2fd;
+            padding: 10px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .fixed-comment {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #c20c0c;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        .floating-ad {
+            position: fixed;
+            top: 100px;
+            left: 20px;
+            width: 200px;
+            background-color: #ffeb3b;
+            padding: 15px;
+            z-index: 999;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        .test-info {
+            background-color: #e8f5e9;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-left: 4px solid #4caf50;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <h1>网易新闻测试页面</h1>
+        </div>
+    </div>
+    
+    <div class="nav">
+        <div class="container">
+            <a href="#">首页</a> | <a href="#">新闻</a> | <a href="#">娱乐</a> | <a href="#">体育</a> | <a href="#">财经</a> | <a href="#">科技</a>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="test-info">
+            <h3>测试说明</h3>
+            <p>这是一个模拟网易新闻页面的测试页面，用于测试纯净阅读模式扩展。点击右上角的"纯净阅读"按钮，应该能够隐藏所有非必要元素（导航栏、侧边栏、广告、推荐内容、评论区等），只保留文章标题和正文内容。</p>
+            <p>测试要点：</p>
+            <ul>
+                <li>1. 悬浮的跟帖图标应该被隐藏</li>
+                <li>2. 所有广告和推荐内容应该被隐藏</li>
+                <li>3. 正文内容应该居中显示，并有良好的排版</li>
+                <li>4. 切换功能应该正常工作</li>
+            </ul>
+        </div>
+        
+        <div class="main-content">
+            <div class="sidebar">
+                <h3>侧边栏</h3>
+                <p>这是侧边栏内容，在阅读模式下应该被隐藏。</p>
+                <ul>
+                    <li>热门新闻1</li>
+                    <li>热门新闻2</li>
+                    <li>热门新闻3</li>
+                </ul>
+            </div>
+            
+            <div class="post_wrapper">
+                <h1 class="post_title">人民来论：做好老旧小区改造 实现从焕新到"长新"</h1>
+                
+                <div class="post_info">
+                    <span class="post_source">来源：人民日报</span> | 
+                    <span class="post_time">2025-01-31 10:30:00</span> | 
+                    <span class="post_tag">标签：民生, 城市更新</span>
+                </div>
+                
+                <div class="ad">
+                    这是广告内容，在阅读模式下应该被隐藏。
+                </div>
+                
+                <div class="post_body">
+                    <p>随着城市更新行动稳步实施，城镇老旧小区改造工作取得显著成效。住房和城乡建设部最新数据显示，2025年全国新开工改造城镇老旧小区2.71万个、惠及499万户，完成投资1332亿元，超额完成年度计划。</p>
+                    
+                    <p>基础设施老化、公共服务不足、适老化水平不高，老旧小区问题长期积累，既影响居民生活质量，也制约城市功能完善。近年来，各地不断拓展改造内涵，将改造纳入系统性城市更新框架之中，推动居住环境、公共服务和社区治理同步提升。</p>
+                    
+                    <img src="https://via.placeholder.com/800x400" alt="老旧小区改造图片">
+                    
+                    <p>浙江、江苏、上海等地在改造过程中同步引入社区养老服务中心、垃圾分类回收设施、公共活动空间等配套，让小区"用得上、留得住"，既提升了居民生活品质和获得感，也为城市可持续发展注入了新动能。</p>
+                    
+                    <p>老旧小区"改不改、改什么、怎么改、改后怎么管"，每个环节都直接影响着居民的切身利益。近年来，不少地方在改造过程中注重听取居民意见的"问着干"，改造方式也随之调整。"居民点单、政府配菜""责任规划师""楼栋管家"等机制在多地探索实践，让居民不再只是"等着改"，而是直接参与方案讨论和后续管理。</p>
+                    
+                    <blockquote>
+                        这种共建共治共享的治理模式，既减少了分歧，也提高了改造效率，同时也增强了居民对改造成果的认同感和维护意识，为项目顺利推进铺垫了扎实的社会基础。
+                    </blockquote>
+                    
+                    <p>老旧小区改造除了能改善居民生活质量，提升城市形象外，同样还是稳投资、促就业、扩内需的重要抓手。在老旧小区改造的过程中，除了常规的房地产核心板块受益外，其上下游产业链，包括家具、家电、家居、装修等消费都会受到拉动。</p>
+                    
+                    <p>此外，5G、人工智能、工业互联网、物联网等相关建设也将被带动。随着老旧小区环境的改善，周边的商业发展和经济发展活力也被带动起来。很多老旧小区不仅成了高品质生活宜居地，也成了新兴产业聚集地。</p>
+                    
+                    <h2>老旧小区改造的意义</h2>
+                    <p>老旧小区改造是一项民生工程、民心工程，也是一项社会治理工程。健全已改造小区的长效管理机制，做好老旧小区改造"后半篇文章"，是一项艰巨的任务，也是一项需要付出诸多努力和耐心的工作。</p>
+                    
+                    <h3>未来展望</h3>
+                    <p>把有限的资金用在群众最关心的地方，把城市更新像"绣花"一样做到细处、做到实处，才能真正托起群众稳稳的幸福感。随着"十五五"序幕拉开，持续以民生为导向、以品质为目标推进老旧小区改造，既是回应群众期待的必答题，也是推动城市高质量发展的长远之策。</p>
+                </div>
+                
+                <div class="share">
+                    <button>分享到微信</button> | 
+                    <button>分享到微博</button> | 
+                    <button>分享到QQ</button>
+                </div>
+                
+                <div class="recommend">
+                    <h3>推荐阅读</h3>
+                    <ul>
+                        <li>推荐文章1：城市更新的新思路</li>
+                        <li>推荐文章2：老旧小区改造的成功案例</li>
+                        <li>推荐文章3：社区治理的创新模式</li>
+                    </ul>
+                </div>
+                
+                <div class="comment">
+                    <h3>评论区</h3>
+                    <p>这是评论区，在阅读模式下应该被隐藏。</p>
+                    <div class="comment_item">
+                        <p>用户1：老旧小区改造确实改善了我们的生活环境！</p>
+                    </div>
+                    <div class="comment_item">
+                        <p>用户2：希望改造后能有更好的物业管理。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>© 2025 网易公司 版权所有</p>
+        </div>
+    </div>
+    
+    <!-- 悬浮元素 -->
+    <div class="fixed-comment">
+        跟帖 (999+)
+    </div>
+    
+    <div class="floating-ad">
+        <h4>推广内容</h4>
+        <p>这是悬浮广告，在阅读模式下应该被隐藏。</p>
+    </div>
+    
+    <script>
+        // 模拟页面加载完成后的动态内容
+        window.addEventListener('load', function() {
+            console.log('页面加载完成，扩展应该已经初始化');
+            
+            // 检查扩展是否已加载
+            setTimeout(function() {
+                const toggleButton = document.getElementById('netease-reading-mode-toggle');
+                if (toggleButton) {
+                    console.log('扩展按钮已创建，测试成功！');
+                } else {
+                    console.error('扩展按钮未创建，可能存在问题');
+                }
+            }, 2000);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,445 @@
+/* 网易新闻纯净阅读模式样式 */
+
+/* 阅读模式下的页面样式 */
+body.netease-reading-mode {
+    background-color: #f8f9fa !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* 创建内容包装器 */
+body.netease-reading-mode::before {
+    content: "" !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background-color: #f8f9fa !important;
+    z-index: 1 !important;
+}
+
+/* 确保内容在背景之上 */
+body.netease-reading-mode * {
+    position: relative !important;
+    z-index: 2 !important;
+}
+
+/* 隐藏所有悬浮元素 */
+body.netease-reading-mode [style*="position: fixed"],
+body.netease-reading-mode [style*="position:fixed"],
+body.netease-reading-mode [style*="position: absolute"],
+body.netease-reading-mode [style*="position:absolute"],
+body.netease-reading-mode .fixed,
+body.netease-reading-mode .absolute,
+body.netease-reading-mode .floating,
+body.netease-reading-mode .suspend {
+    display: none !important;
+    visibility: hidden !important;
+}
+
+/* 保留阅读模式按钮 */
+body.netease-reading-mode #netease-reading-mode-toggle {
+    display: block !important;
+    visibility: visible !important;
+    position: fixed !important;
+    z-index: 99999 !important;
+}
+
+/* 隐藏非必要元素的通用样式 */
+.netease-reading-mode .ntes_nav_wrap,
+.netease-reading-mode .header,
+.netease-reading-mode .nav,
+.netease-reading-mode .navigation,
+.netease-reading-mode .nav_wrap,
+.netease-reading-mode .nav_main,
+.netease-reading-mode .post_side,
+.netease-reading-mode .sidebar,
+.netease-reading-mode .side,
+.netease-reading-mode .aside,
+.netease-reading-mode .right_side,
+.netease-reading-mode .left_side,
+.netease-reading-mode .ad_module,
+.netease-reading-mode .ad,
+.netease-reading-mode .advertisement,
+.netease-reading-mode .gg300,
+.netease-reading-mode [data-adid],
+.netease-reading-mode .right_ad_item,
+.netease-reading-mode .ad_box,
+.netease-reading-mode .ad_content,
+.netease-reading-mode .ad_container,
+.netease-reading-mode .post_recommend,
+.netease-reading-mode .recommend,
+.netease-reading-mode .related,
+.netease-reading-mode .hot-news,
+.netease-reading-mode .related_news,
+.netease-reading-mode .hot_recommend,
+.netease-reading-mode .recommend_list,
+.netease-reading-mode .comment,
+.netease-reading-mode .comments,
+.netease-reading-mode .post_comment,
+.netease-reading-mode .comment_area,
+.netease-reading-mode .comment_box,
+.netease-reading-mode .comment_section,
+.netease-reading-mode .share,
+.netease-reading-mode .post_share,
+.netease-reading-mode .share_box,
+.netease-reading-mode .share_area,
+.netease-reading-mode .share_btn,
+.netease-reading-mode .footer,
+.netease-reading-mode .post_footer,
+.netease-reading-mode .foot,
+.netease-reading-mode .bottom,
+.netease-reading-mode .blank20,
+.netease-reading-mode .blank25,
+.netease-reading-mode .post_wemedia,
+.netease-reading-mode .post_source,
+.netease-reading-mode .post_time,
+.netease-reading-mode .post_tag,
+.netease-reading-mode .ep-source,
+.netease-reading-mode .ep-time,
+.netease-reading-mode .post_info,
+.netease-reading-mode .post_btm,
+.netease-reading-mode .post_extra,
+.netease-reading-mode .suspend,
+.netease-reading-mode .float,
+.netease-reading-mode .floating,
+.netease-reading-mode .fixed,
+.netease-reading-mode .sticky,
+.netease-reading-mode .suspension,
+.netease-reading-mode .float_layer,
+.netease-reading-mode .suspend_layer,
+.netease-reading-mode .post_comment_btn,
+.netease-reading-mode .comment_btn,
+.netease-reading-mode .comment_fixed,
+.netease-reading-mode .comment_float,
+.netease-reading-mode .comment_suspension,
+.netease-reading-mode .post_comment_fixed,
+.netease-reading-mode .netease_comment_btn,
+.netease-reading-mode .comment_float_btn,
+.netease-reading-mode .reply_btn,
+.netease-reading-mode .reply_float {
+    display: none !important;
+    visibility: hidden !important;
+    width: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+}
+
+/* 优化主容器布局 */
+.netease-reading-mode .post_wrapper,
+.netease-reading-mode .post_main,
+.netease-reading-mode .main,
+.netease-reading-mode .content-wrapper,
+.netease-reading-mode .article_wrapper,
+.netease-reading-mode .news_wrapper,
+.netease-reading-mode .post_container,
+.netease-reading-mode .article_container,
+.netease-reading-mode .news_container {
+    width: 100% !important;
+    max-width: 900px !important;
+    margin: 0 auto !important;
+    padding: 40px 20px !important;
+    background-color: #ffffff !important;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1) !important;
+    border-radius: 8px !important;
+    margin-top: 20px !important;
+    margin-bottom: 20px !important;
+}
+
+/* 标题样式优化 */
+.netease-reading-mode .post_title,
+.netease-reading-mode .article_title,
+.netease-reading-mode h1,
+.netease-reading-mode .title,
+.netease-reading-mode .post_title_main,
+.netease-reading-mode .article_main_title,
+.netease-reading-mode .headline,
+.netease-reading-mode .news_title,
+.netease-reading-mode .content_title,
+.netease-reading-mode .main_title {
+    font-size: 32px !important;
+    font-weight: bold !important;
+    line-height: 1.4 !important;
+    color: #333333 !important;
+    margin-bottom: 24px !important;
+    text-align: center !important;
+    padding: 0 20px !important;
+}
+
+/* 正文内容样式优化 */
+.netease-reading-mode .post_body,
+.netease-reading-mode .post_content,
+.netease-reading-mode #content,
+.netease-reading-mode .article_content,
+.netease-reading-mode .content,
+.netease-reading-mode .post_text,
+.netease-reading-mode .article_body,
+.netease-reading-mode .news_content,
+.netease-reading-mode .main_content,
+.netease-reading-mode .content_body,
+.netease-reading-mode .post_main,
+.netease-reading-mode .article_main,
+.netease-reading-mode .text_content {
+    font-size: 18px !important;
+    line-height: 1.8 !important;
+    color: #333333 !important;
+    text-align: justify !important;
+    padding: 0 20px !important;
+}
+
+/* 段落样式优化 */
+.netease-reading-mode .post_body p,
+.netease-reading-mode .post_content p,
+.netease-reading-mode #content p,
+.netease-reading-mode .article_content p,
+.netease-reading-mode .content p {
+    margin-bottom: 18px !important;
+    text-indent: 2em !important;
+    font-size: 18px !important;
+    line-height: 1.8 !important;
+}
+
+/* 图片样式优化 */
+.netease-reading-mode .post_body img,
+.netease-reading-mode .post_content img,
+.netease-reading-mode #content img,
+.netease-reading-mode .article_content img,
+.netease-reading-mode .content img {
+    max-width: 100% !important;
+    height: auto !important;
+    display: block !important;
+    margin: 25px auto !important;
+    border-radius: 4px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* 引用样式优化 */
+.netease-reading-mode .post_body blockquote,
+.netease-reading-mode .post_content blockquote,
+.netease-reading-mode #content blockquote,
+.netease-reading-mode .article_content blockquote,
+.netease-reading-mode .content blockquote {
+    border-left: 4px solid #e74c3c !important;
+    padding-left: 20px !important;
+    margin: 20px 0 !important;
+    font-style: italic !important;
+    color: #666666 !important;
+}
+
+/* 列表样式优化 */
+.netease-reading-mode .post_body ul,
+.netease-reading-mode .post_content ul,
+.netease-reading-mode #content ul,
+.netease-reading-mode .article_content ul,
+.netease-reading-mode .content ul,
+.netease-reading-mode .post_body ol,
+.netease-reading-mode .post_content ol,
+.netease-reading-mode #content ol,
+.netease-reading-mode .article_content ol,
+.netease-reading-mode .content ol {
+    margin: 20px 0 !important;
+    padding-left: 40px !important;
+}
+
+.netease-reading-mode .post_body li,
+.netease-reading-mode .post_content li,
+.netease-reading-mode #content li,
+.netease-reading-mode .article_content li,
+.netease-reading-mode .content li {
+    margin-bottom: 10px !important;
+    font-size: 18px !important;
+    line-height: 1.6 !important;
+}
+
+/* 标题样式优化 */
+.netease-reading-mode .post_body h2,
+.netease-reading-mode .post_content h2,
+.netease-reading-mode #content h2,
+.netease-reading-mode .article_content h2,
+.netease-reading-mode .content h2 {
+    font-size: 24px !important;
+    font-weight: bold !important;
+    margin: 30px 0 15px 0 !important;
+    color: #333333 !important;
+}
+
+.netease-reading-mode .post_body h3,
+.netease-reading-mode .post_content h3,
+.netease-reading-mode #content h3,
+.netease-reading-mode .article_content h3,
+.netease-reading-mode .content h3 {
+    font-size: 20px !important;
+    font-weight: bold !important;
+    margin: 25px 0 12px 0 !important;
+    color: #333333 !important;
+}
+
+/* 链接样式优化 */
+.netease-reading-mode .post_body a,
+.netease-reading-mode .post_content a,
+.netease-reading-mode #content a,
+.netease-reading-mode .article_content a,
+.netease-reading-mode .content a {
+    color: #e74c3c !important;
+    text-decoration: none !important;
+    border-bottom: 1px solid transparent !important;
+    transition: border-color 0.3s ease !important;
+}
+
+.netease-reading-mode .post_body a:hover,
+.netease-reading-mode .post_content a:hover,
+.netease-reading-mode #content a:hover,
+.netease-reading-mode .article_content a:hover,
+.netease-reading-mode .content a:hover {
+    border-bottom-color: #e74c3c !important;
+}
+
+/* 表格样式优化 */
+.netease-reading-mode .post_body table,
+.netease-reading-mode .post_content table,
+.netease-reading-mode #content table,
+.netease-reading-mode .article_content table,
+.netease-reading-mode .content table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    margin: 20px 0 !important;
+}
+
+.netease-reading-mode .post_body th,
+.netease-reading-mode .post_content th,
+.netease-reading-mode #content th,
+.netease-reading-mode .article_content th,
+.netease-reading-mode .content th,
+.netease-reading-mode .post_body td,
+.netease-reading-mode .post_content td,
+.netease-reading-mode #content td,
+.netease-reading-mode .article_content td,
+.netease-reading-mode .content td {
+    border: 1px solid #ddd !important;
+    padding: 12px !important;
+    text-align: left !important;
+}
+
+.netease-reading-mode .post_body th,
+.netease-reading-mode .post_content th,
+.netease-reading-mode #content th,
+.netease-reading-mode .article_content th,
+.netease-reading-mode .content th {
+    background-color: #f2f2f2 !important;
+    font-weight: bold !important;
+}
+
+/* 代码块样式优化 */
+.netease-reading-mode .post_body pre,
+.netease-reading-mode .post_content pre,
+.netease-reading-mode #content pre,
+.netease-reading-mode .article_content pre,
+.netease-reading-mode .content pre {
+    background-color: #f8f9fa !important;
+    border: 1px solid #e9ecef !important;
+    border-radius: 4px !important;
+    padding: 15px !important;
+    overflow-x: auto !important;
+    font-family: monospace !important;
+    font-size: 14px !important;
+    line-height: 1.5 !important;
+    margin: 20px 0 !important;
+}
+
+.netease-reading-mode .post_body code,
+.netease-reading-mode .post_content code,
+.netease-reading-mode #content code,
+.netease-reading-mode .article_content code,
+.netease-reading-mode .content code {
+    background-color: #f8f9fa !important;
+    padding: 2px 4px !important;
+    border-radius: 3px !important;
+    font-family: monospace !important;
+    font-size: 14px !important;
+}
+
+/* 阅读模式切换按钮样式 */
+#netease-reading-mode-toggle {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    z-index: 99999 !important;
+    background: #e74c3c !important;
+    color: white !important;
+    padding: 10px 15px !important;
+    border-radius: 5px !important;
+    cursor: pointer !important;
+    font-size: 14px !important;
+    font-weight: bold !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2) !important;
+    transition: all 0.3s ease !important;
+    border: none !important;
+    outline: none !important;
+}
+
+#netease-reading-mode-toggle:hover {
+    background: #c0392b !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
+}
+
+/* 暗色主题支持 */
+@media (prefers-color-scheme: dark) {
+    body.netease-reading-mode {
+        background-color: #1a1a1a !important;
+    }
+    
+    .netease-reading-mode .post_wrapper,
+    .netease-reading-mode .post_main,
+    .netease-reading-mode .main,
+    .netease-reading-mode .content-wrapper {
+        background-color: #2d2d2d !important;
+        color: #e0e0e0 !important;
+    }
+    
+    .netease-reading-mode .post_title,
+    .netease-reading-mode .article_title,
+    .netease-reading-mode h1,
+    .netease-reading-mode .title {
+        color: #ffffff !important;
+    }
+    
+    .netease-reading-mode .post_body,
+    .netease-reading-mode .post_content,
+    .netease-reading-mode #content,
+    .netease-reading-mode .article_content,
+    .netease-reading-mode .content {
+        color: #e0e0e0 !important;
+    }
+    
+    .netease-reading-mode .post_body a,
+    .netease-reading-mode .post_content a,
+    .netease-reading-mode #content a,
+    .netease-reading-mode .article_content a,
+    .netease-reading-mode .content a {
+        color: #ff6b6b !important;
+    }
+    
+    .netease-reading-mode .post_body th,
+    .netease-reading-mode .post_content th,
+    .netease-reading-mode #content th,
+    .netease-reading-mode .article_content th,
+    .netease-reading-mode .content th {
+        background-color: #404040 !important;
+    }
+    
+    .netease-reading-mode .post_body pre,
+    .netease-reading-mode .post_content pre,
+    .netease-reading-mode #content pre,
+    .netease-reading-mode .article_content pre,
+    .netease-reading-mode .content pre,
+    .netease-reading-mode .post_body code,
+    .netease-reading-mode .post_content code,
+    .netease-reading-mode #content code,
+    .netease-reading-mode .article_content code,
+    .netease-reading-mode .content code {
+        background-color: #404040 !important;
+        color: #e0e0e0 !important;
+    }
+}
