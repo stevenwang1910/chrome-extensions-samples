@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>网易新闻纯净阅读模式 - 测试页面</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .header {
+            background-color: #e74c3c;
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .nav {
+            background-color: #333;
+            color: white;
+            padding: 10px 20px;
+        }
+        .nav a {
+            color: white;
+            text-decoration: none;
+            margin-right: 20px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 0 20px;
+            display: flex;
+            gap: 20px;
+        }
+        .main-content {
+            flex: 2;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .sidebar {
+            flex: 1;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .ad {
+            background-color: #f8f8f8;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            border: 1px dashed #ddd;
+        }
+        .comments {
+            background-color: white;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .footer {
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .article_title {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            line-height: 1.3;
+        }
+        .post_time {
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        .post_body {
+            font-size: 16px;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+        .post_body p {
+            margin-bottom: 18px;
+            text-indent: 2em;
+        }
+        .share {
+            margin: 20px 0;
+            padding: 10px;
+            background-color: #f5f5f5;
+            text-align: center;
+        }
+        .recommend {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+        }
+        .recommend h3 {
+            margin-top: 0;
+            color: #e74c3c;
+        }
+        .recommend-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+        }
+        .recommend-item:last-child {
+            border-bottom: none;
+        }
+        .test-info {
+            background-color: #e8f4fd;
+            border: 1px solid #b3d8ff;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">网易新闻</div>
+        <div class="user-info">用户信息</div>
+    </div>
+    
+    <div class="nav">
+        <a href="#">首页</a>
+        <a href="#">国内</a>
+        <a href="#">国际</a>
+        <a href="#">军事</a>
+        <a href="#">财经</a>
+        <a href="#">科技</a>
+        <a href="#">娱乐</a>
+        <a href="#">体育</a>
+    </div>
+    
+    <div class="container">
+        <div class="main-content">
+            <div class="test-info">
+                <strong>测试提示：</strong>这是一个模拟网易新闻页面的测试页面，用于测试"网易新闻纯净阅读模式"Chrome扩展。安装扩展后，点击扩展图标可以切换阅读模式。
+            </div>
+            
+            <h1 class="article_title">测试文章标题：网易新闻纯净阅读模式扩展测试</h1>
+            <div class="post_time">2023-01-01 10:00:00 来源：测试来源</div>
+            
+            <div class="post_body">
+                <p>这是第一段测试内容。网易新闻纯净阅读模式扩展应该能够识别并保留这段正文内容，同时隐藏页面上的其他干扰元素。这段文字应该有足够的长度来测试阅读模式的显示效果。</p>
+                
+                <p>这是第二段测试内容。在纯净阅读模式下，用户应该能够专注于阅读文章内容，而不被广告、侧边栏、评论区等元素干扰。这段文字用于测试阅读模式的字体大小、行间距和排版效果。</p>
+                
+                <p>这是第三段测试内容。网易新闻作为国内重要的新闻平台，其页面通常包含大量非阅读相关的元素，如广告、推荐内容、评论区等。纯净阅读模式扩展的目标就是帮助用户过滤掉这些干扰元素，提供更好的阅读体验。</p>
+                
+                <p>这是第四段测试内容。通过使用Chrome扩展技术，我们可以在页面加载完成后自动识别并隐藏非必要元素，只保留文章标题和正文内容。用户也可以通过扩展的弹出界面手动切换阅读模式，或者设置自动启用选项。</p>
+                
+                <p>这是最后一段测试内容。网易新闻纯净阅读模式扩展不仅适用于网易新闻，也可以通过适当的选择器调整，适用于其他类似的新闻网站。这为用户提供了更加通用和灵活的阅读体验优化方案。</p>
+            </div>
+            
+            <div class="share">
+                分享按钮区域
+            </div>
+            
+            <div class="recommend">
+                <h3>推荐阅读</h3>
+                <div class="recommend-item">推荐文章1：Chrome扩展开发指南</div>
+                <div class="recommend-item">推荐文章2：提升网页阅读体验的方法</div>
+                <div class="recommend-item">推荐文章3：网易新闻页面结构分析</div>
+            </div>
+        </div>
+        
+        <div class="sidebar">
+            <div class="ad">
+                广告区域1
+            </div>
+            
+            <div class="ad">
+                广告区域2
+            </div>
+            
+            <h3>热门新闻</h3>
+            <div class="recommend-item">热门新闻1</div>
+            <div class="recommend-item">热门新闻2</div>
+            <div class="recommend-item">热门新闻3</div>
+        </div>
+    </div>
+    
+    <div class="ad">
+        页面底部广告
+    </div>
+    
+    <div class="comments">
+        <h3>评论区</h3>
+        <div class="comment-item">
+            <div class="comment-user">用户1：</div>
+            <div class="comment-content">这是一条评论内容。</div>
+        </div>
+        <div class="comment-item">
+            <div class="comment-user">用户2：</div>
+            <div class="comment-content">这是另一条评论内容。</div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        版权信息 | 联系我们 | 隐私政策 | 网站地图
+    </div>
+    
+    <script>
+        // 模拟网易新闻页面结构
+        console.log('测试页面已加载');
+        
+        // 添加一些额外的类名，模拟真实的网易新闻页面
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelector('.main-content').classList.add('post_content');
+            document.querySelector('.post_body').classList.add('post_text');
+            document.querySelector('.sidebar').classList.add('post_side');
+            document.querySelector('.comments').classList.add('post_comment');
+            document.querySelector('.recommend').classList.add('post_recommend');
+            document.querySelector('.share').classList.add('post_share');
+            document.querySelector('.footer').classList.add('post_footer');
+            
+            // 添加一些常见的网易新闻类名
+            document.querySelector('.header').classList.add('ntes_nav_wrap');
+            document.querySelector('.nav').classList.add('navigation');
+            document.querySelector('.ad').classList.add('ad_module');
+            document.querySelector('.post_time').classList.add('ep-time');
+        });
+    </script>
+</body>
+</html>
