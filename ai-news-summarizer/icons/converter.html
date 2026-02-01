@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>SVG to PNG Converter</title>
+</head>
+<body>
+  <canvas id="canvas16" width="16" height="16"></canvas>
+  <canvas id="canvas48" width="48" height="48"></canvas>
+  <canvas id="canvas128" width="128" height="128"></canvas>
+  
+  <script>
+    // 加载SVG图像
+    const svgText = `<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#1890ff;stop-opacity:1" />
+          <stop offset="100%" style="stop-color:#40a9ff;stop-opacity:1" />
+        </linearGradient>
+      </defs>
+      
+      <!-- 背景圆形 -->
+      <circle cx="64" cy="64" r="60" fill="url(#grad1)" />
+      
+      <!-- AI图标 -->
+      <text x="64" y="45" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="white" text-anchor="middle">AI</text>
+      
+      <!-- 新闻图标 -->
+      <rect x="30" y="60" width="68" height="40" rx="4" fill="white" opacity="0.9"/>
+      <rect x="38" y="68" width="52" height="3" fill="#1890ff"/>
+      <rect x="38" y="75" width="52" height="3" fill="#1890ff"/>
+      <rect x="38" y="82" width="52" height="3" fill="#1890ff"/>
+      <rect x="38" y="89" width="30" height="3" fill="#1890ff"/>
+    </svg>`;
+    
+    const blob = new Blob([svgText], {type: 'image/svg+xml'});
+    const url = URL.createObjectURL(blob);
+    
+    // 创建图像对象
+    const img = new Image();
+    img.onload = function() {
+      // 生成16x16图标
+      const canvas16 = document.getElementById('canvas16');
+      const ctx16 = canvas16.getContext('2d');
+      ctx16.drawImage(img, 0, 0, 16, 16);
+      downloadCanvas(canvas16, 'icon16.png');
+      
+      // 生成48x48图标
+      const canvas48 = document.getElementById('canvas48');
+      const ctx48 = canvas48.getContext('2d');
+      ctx48.drawImage(img, 0, 0, 48, 48);
+      downloadCanvas(canvas48, 'icon48.png');
+      
+      // 生成128x128图标
+      const canvas128 = document.getElementById('canvas128');
+      const ctx128 = canvas128.getContext('2d');
+      ctx128.drawImage(img, 0, 0, 128, 128);
+      downloadCanvas(canvas128, 'icon128.png');
+    };
+    img.src = url;
+    
+    function downloadCanvas(canvas, filename) {
+      const link = document.createElement('a');
+      link.download = filename;
+      link.href = canvas.toDataURL();
+      link.click();
+    }
+  </script>
+</body>
+</html>
