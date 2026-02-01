@@ -1,14 +1,25 @@
 /* 纯净阅读模式样式 */
-.pure-reading-mode * {
-  all: unset !important;
+@charset "UTF-8";
+
+.pure-reading-mode {
+  all: initial !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
 }
 
-.pure-reading-mode,
+.pure-reading-mode * {
+  box-sizing: border-box !important;
+}
+
 .pure-reading-mode body {
   width: 100% !important;
   min-height: 100vh !important;
+  margin: 0 !important;
+  padding: 0 !important;
   background: #f5f5f5 !important;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+  color: #333 !important;
+  line-height: 1.6 !important;
+  font-size: 16px !important;
 }
 
 #pure-reading-container {
@@ -34,17 +45,28 @@
   color: #333 !important;
   margin-bottom: 30px !important;
   text-align: left !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  white-space: normal !important;
 }
 
 .pure-reading-body {
   font-size: 18px !important;
   line-height: 1.8 !important;
   color: #333 !important;
+  text-align: justify !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  white-space: pre-wrap !important;
 }
 
 .pure-reading-body p {
   margin-bottom: 20px !important;
   text-align: justify !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  white-space: pre-wrap !important;
+  text-indent: 2em !important;
 }
 
 .pure-reading-body strong {
@@ -60,6 +82,50 @@
   height: auto !important;
   display: block !important;
   margin: 30px auto !important;
+  border-radius: 4px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+.pure-reading-body video {
+  max-width: 100% !important;
+  height: auto !important;
+  display: block !important;
+  margin: 30px auto !important;
+  border-radius: 4px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+.pure-reading-body iframe {
+  max-width: 100% !important;
+  height: auto !important;
+  display: block !important;
+  margin: 30px auto !important;
+  border-radius: 4px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+  border: none !important;
+  min-height: 315px !important; /* 确保视频有最小高度 */
+}
+
+.pure-reading-body figure {
+  margin: 30px 0 !important;
+  text-align: center !important;
+}
+
+.pure-reading-body figcaption {
+  font-size: 14px !important;
+  color: #666 !important;
+  margin-top: 10px !important;
+  font-style: italic !important;
+  text-align: center !important;
+}
+
+.pure-reading-body .image-error {
+  color: #999 !important;
+  font-style: italic !important;
+  text-align: center !important;
+  padding: 10px !important;
+  margin: 20px 0 !important;
+  background: #f9f9f9 !important;
   border-radius: 4px !important;
 }
 
@@ -119,5 +185,23 @@
     font-size: 14px !important;
     top: 15px !important;
     right: 15px !important;
+  }
+  
+  /* 移动设备上的媒体元素样式 */
+  .pure-reading-body img,
+  .pure-reading-body video,
+  .pure-reading-body iframe {
+    margin: 20px auto !important;
+    max-width: 100% !important;
+    height: auto !important;
+  }
+  
+  .pure-reading-body iframe {
+    min-height: 200px !important;
+  }
+  
+  .pure-reading-body figcaption {
+    font-size: 12px !important;
+    padding: 0 10px !important;
   }
 }
