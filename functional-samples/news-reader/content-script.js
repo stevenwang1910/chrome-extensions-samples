@@ -1,8 +1,93 @@
 let isPureMode = false;
 const PURE_MODE_CLASS = 'pure-reading-mode';
 
+function getRealImageSrc(img) {
+  const src = img.getAttribute('src') || '';
+  const dataSrc = img.getAttribute('data-src') || '';
+  const dataOriginal = img.getAttribute('data-original') || '';
+  if (dataOriginal && !dataOriginal.includes('placeholder')) {
+    return dataOriginal;
+  }
+  if (dataSrc && !dataSrc.includes('placeholder')) {
+    return dataSrc;
+  }
+  if (src && !src.includes('placeholder') && !src.includes('data:')) {
+    return src;
+  }
+  return dataSrc || dataOriginal || src;
+}
+
+function processMediaElements(container) {
+  const imgs = container.querySelectorAll('img');
+  imgs.forEach(img => {
+    const realSrc = getRealImageSrc(img);
+    if (realSrc) {
+      img.setAttribute('src', realSrc);
+      img.removeAttribute('data-src');
+      img.removeAttribute('data-original');
+      img.style.cssText = 'max-width: 100%; height: auto; display: block; margin: 20px auto;';
+    }
+  });
+  
+  const videos = container.querySelectorAll('video');
+  videos.forEach(video => {
+    video.style.cssText = 'max-width: 100%; display: block; margin: 20px auto;';
+    video.setAttribute('controls', '');
+  });
+  
+  const iframes = container.querySelectorAll('iframe');
+  iframes.forEach(iframe => {
+    iframe.style.cssText = 'max-width: 100%; display: block; margin: 20px auto;';
+  });
+}
+
+function cloneElementWithContent(node) {
+  const clone = document.createElement(node.tagName.toLowerCase());
+  
+  if (node.tagName === 'IMG') {
+    const realSrc = getRealImageSrc(node);
+    if (realSrc) {
+      clone.setAttribute('src', realSrc);
+    }
+    const alt = node.getAttribute('alt');
+    if (alt) clone.setAttribute('alt', alt);
+    clone.style.cssText = 'max-width: 100%; height: auto; display: block; margin: 20px auto;';
+    return clone;
+  }
+  
+  if (node.tagName === 'VIDEO' || node.tagName === 'IFRAME') {
+    return node.cloneNode(true);
+  }
+  
+  const childNodes = node.childNodes;
+  for (let i = 0; i < childNodes.length; i++) {
+    const child = childNodes[i];
+    if (child.nodeType === Node.TEXT_NODE) {
+      clone.appendChild(document.createTextNode(child.textContent));
+    } else if (child.nodeType === Node.ELEMENT_NODE) {
+      const childTagName = child.tagName;
+      if (childTagName === 'IMG') {
+        clone.appendChild(cloneElementWithContent(child));
+      } else if (childTagName === 'VIDEO' || childTagName === 'IFRAME') {
+        clone.appendChild(child.cloneNode(true));
+      } else if (['STRONG', 'EM', 'B', 'I', 'A', 'SPAN', 'BR'].includes(childTagName)) {
+        const innerClone = document.createElement(childTagName.toLowerCase());
+        if (childTagName === 'A') {
+          const href = child.getAttribute('href');
+          if (href) innerClone.setAttribute('href', href);
+        }
+        innerClone.textContent = child.textContent;
+        clone.appendChild(innerClone);
+      } else {
+        clone.appendChild(cloneElementWithContent(child));
+      }
+    }
+  }
+  
+  return clone;
+}
+
 function extractContent() {
-  // 适配网易新闻页面结构
   const title = document.querySelector('h1.post_title')?.textContent.trim();
   const postBody = document.querySelector('.post_body');
   
@@ -10,82 +95,59 @@ function extractContent() {
     return null;
   }
   
-  // 创建新的内容容器，只保留文本内容
   const content = document.createElement('div');
   content.className = 'post_body';
   
-  // 遍历postBody的所有子节点，包括文本节点
   const childNodes = postBody.childNodes;
   for (let i = 0; i < childNodes.length; i++) {
     const node = childNodes[i];
     
-    // 只保留元素节点
     if (node.nodeType !== Node.ELEMENT_NODE) {
       continue;
     }
     
     const tagName = node.tagName;
+    const className = (node.className || '').toString();
     
-    // 只保留段落、图片和figure元素
-    if (tagName === 'P' || tagName === 'IMG' || tagName === 'FIGURE') {
-      // 深入检查p标签内容，排除脚本和样式代码
-      if (tagName === 'P') {
-        const textContent = node.textContent.trim();
-        // 排除包含CSS、JavaScript代码的段落
-        if (textContent.includes('{') && textContent.includes('}') && 
-            (textContent.includes('.') || textContent.includes('#') || 
-             textContent.includes('var') || textContent.includes('function') ||
-             textContent.includes('=') || textContent.includes(':'))) {
-          continue;
-        }
+    if (tagName === 'P') {
+      const textContent = node.textContent.trim();
+      if (textContent.includes('{') && textContent.includes('}') && 
+          (textContent.includes('.') || textContent.includes('#') || 
+           textContent.includes('var') || textContent.includes('function') ||
+           textContent.includes('=') || textContent.includes(':'))) {
+        continue;
       }
       
-      // 克隆节点但不复制任何属性
-      const clone = document.createElement(node.tagName.toLowerCase());
-      
-      // 只复制文本内容（针对p标签）
-      if (tagName === 'P') {
-        clone.textContent = node.textContent;
-      } else if (tagName === 'IMG') {
-        // 对于图片，只复制src属性
-        const src = node.getAttribute('src');
-        if (src) {
-          clone.setAttribute('src', src);
-        }
-        // 可以选择性地复制其他必要属性
-        const alt = node.getAttribute('alt');
-        if (alt) {
-          clone.setAttribute('alt', alt);
-        }
-      } else if (tagName === 'FIGURE') {
-        // 对于figure标签，递归处理其子元素
-        const figureChildNodes = node.childNodes;
-        for (let j = 0; j < figureChildNodes.length; j++) {
-          const figureNode = figureChildNodes[j];
-          if (figureNode.nodeType === Node.ELEMENT_NODE) {
-            const figureClone = document.createElement(figureNode.tagName.toLowerCase());
-            if (figureNode.tagName === 'IMG') {
-              const src = figureNode.getAttribute('src');
-              if (src) {
-                figureClone.setAttribute('src', src);
-              }
-              const alt = figureNode.getAttribute('alt');
-              if (alt) {
-                figureClone.setAttribute('alt', alt);
-              }
-            } else if (figureNode.tagName === 'FIGCAPTION') {
-              figureClone.textContent = figureNode.textContent;
-            }
-            clone.appendChild(figureClone);
-          }
-        }
+      const hasImg = node.querySelector('img');
+      if (hasImg) {
+        const clone = cloneElementWithContent(node);
+        content.appendChild(clone);
+      } else {
+        const clone = cloneElementWithContent(node);
+        content.appendChild(clone);
       }
-      
+    } else if (tagName === 'IMG') {
+      const clone = cloneElementWithContent(node);
+      content.appendChild(clone);
+    } else if (tagName === 'FIGURE' || tagName === 'PICTURE') {
+      const clone = node.cloneNode(true);
+      processMediaElements(clone);
+      content.appendChild(clone);
+    } else if (tagName === 'DIV' && className) {
+      const hasMedia = node.querySelector('img, video, iframe');
+      if (hasMedia) {
+        const clone = node.cloneNode(true);
+        processMediaElements(clone);
+        content.appendChild(clone);
+      }
+    } else if (tagName === 'VIDEO' || tagName === 'IFRAME') {
+      const clone = node.cloneNode(true);
       content.appendChild(clone);
     }
   }
   
-  // 如果没有提取到内容，尝试直接获取文本
+  processMediaElements(content);
+  
   if (content.children.length === 0) {
     const text = postBody.textContent.trim();
     if (text) {
@@ -113,6 +175,7 @@ function enterPureMode() {
   // 完全清空body
   document.body.innerHTML = '';
   document.body.style.cssText = 'margin: 0; padding: 0; background: #f5f5f5; font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', \'PingFang SC\', \'Hiragino Sans GB\', \'Microsoft YaHei\', \'Helvetica Neue\', Helvetica, Arial, sans-serif;';
+  document.documentElement.classList.remove(PURE_MODE_CLASS);
   
   // 创建纯净阅读容器
   const pureContainer = document.createElement('div');
