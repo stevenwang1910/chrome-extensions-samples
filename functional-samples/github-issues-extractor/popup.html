@@ -3,42 +3,160 @@
 <head>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      padding: 10px;
-      width: 600px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      padding: 16px;
+      width: 700px;
+      margin: 0;
+      background: #ffffff;
     }
     h1 {
-      font-size: 16px;
-      margin-bottom: 10px;
+      font-size: 18px;
+      font-weight: 600;
+      margin: 0 0 16px 0;
+      color: #24292e;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    h1::before {
+      content: '';
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="%2324292e"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>') no-repeat center;
+      background-size: contain;
     }
     table {
       width: 100%;
-      border-collapse: collapse;
-    }
-    th, td {
-      border: 1px solid #ddd;
-      padding: 8px;
-      text-align: left;
+      border-collapse: separate;
+      border-spacing: 0;
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
     th {
-      background-color: #f2f2f2;
+      background: #f6f8fa;
+      font-weight: 600;
       font-size: 12px;
+      color: #24292e;
+      padding: 12px 10px;
+      text-align: left;
+      border-bottom: 2px solid #e1e4e8;
     }
     td {
-      font-size: 11px;
+      font-size: 13px;
+      padding: 12px 10px;
+      border-bottom: 1px solid #e1e4e8;
+      color: #24292e;
+    }
+    tr:hover td {
+      background: #f6f8fa;
+    }
+    tr:last-child td {
+      border-bottom: none;
     }
     .loading {
       text-align: center;
-      padding: 20px;
+      padding: 40px 20px;
+      color: #586069;
+      font-size: 14px;
+    }
+    .loading::before {
+      content: '';
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #e1e4e8;
+      border-top-color: #0366d6;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-right: 10px;
+      vertical-align: middle;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
     .debug {
-      margin-top: 10px;
-      padding: 10px;
-      background: #f0f0f0;
-      border: 1px solid #ccc;
-      font-size: 10px;
-      max-height: 200px;
+      margin-top: 16px;
+      padding: 12px;
+      background: #f6f8fa;
+      border: 1px solid #e1e4e8;
+      border-radius: 6px;
+      font-size: 11px;
+      max-height: 150px;
       overflow-y: auto;
+      color: #586069;
+    }
+    .debug h3 {
+      margin: 0 0 8px 0;
+      font-size: 12px;
+      font-weight: 600;
+      color: #24292e;
+    }
+    .debug pre {
+      margin: 0;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+    .status-open {
+      color: #22863a;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .status-open::before {
+      content: '';
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="%2322863a"><path d="M8 9.5a1.5 1.5 0 100-3 1.5 1.5 0 000 3zM1.5 8a6.5 6.5 0 1113 0 6.5 6.5 0 01-13 0zM8 0a8 8 0 100 16A8 8 0 008 0z"/></svg>') no-repeat center;
+      background-size: contain;
+    }
+    .status-closed {
+      color: #d73a49;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .status-closed::before {
+      content: '';
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="%23d73a49"><path d="M8 9.5a1.5 1.5 0 100-3 1.5 1.5 0 000 3zM1.5 8a6.5 6.5 0 1113 0 6.5 6.5 0 01-13 0zM8 0a8 8 0 100 16A8 8 0 008 0z"/></svg>') no-repeat center;
+      background-size: contain;
+    }
+    .issue-id {
+      font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+      color: #586069;
+      font-size: 12px;
+    }
+    .issue-title {
+      max-width: 280px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .issue-author {
+      color: #586069;
+      font-size: 12px;
+    }
+    .issue-date {
+      color: #6a737d;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: #586069;
+    }
+    .issue-count {
+      font-size: 12px;
+      color: #586069;
+      margin-bottom: 12px;
     }
   </style>
 </head>
@@ -46,14 +164,15 @@
   <h1>GitHub Issues</h1>
   <div id="loading" class="loading">Loading...</div>
   <div id="content" style="display: none;">
+    <div id="issueCount" class="issue-count"></div>
     <table id="issuesTable">
       <thead>
         <tr>
-          <th>ID</th>
-          <th>Status</th>
+          <th style="width: 70px;">ID</th>
+          <th style="width: 80px;">Status</th>
           <th>Title</th>
-          <th>Author</th>
-          <th>Date</th>
+          <th style="width: 100px;">Author</th>
+          <th style="width: 100px;">Date</th>
         </tr>
       </thead>
       <tbody></tbody>
