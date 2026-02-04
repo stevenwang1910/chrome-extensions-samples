@@ -1,0 +1,148 @@
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  margin: 0;
+  padding: 0;
+  min-width: 800px;
+  background-color: #f6f8fa;
+}
+
+.container {
+  padding: 20px;
+}
+
+h1 {
+  font-size: 20px;
+  margin: 0 0 10px 0;
+  color: #24292f;
+}
+
+.description {
+  font-size: 14px;
+  color: #57606a;
+  margin: 0 0 15px 0;
+}
+
+.extract-btn {
+  background-color: #2da44e;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.extract-btn:hover {
+  background-color: #2c974b;
+}
+
+.extract-btn:disabled {
+  background-color: #94d3a2;
+  cursor: not-allowed;
+}
+
+.status {
+  margin-top: 15px;
+  font-size: 14px;
+  color: #57606a;
+}
+
+.status.error {
+  color: #cf222e;
+}
+
+.status.success {
+  color: #1a7f37;
+}
+
+.results {
+  margin-top: 20px;
+}
+
+.issues-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+  overflow: hidden;
+  font-size: 13px;
+}
+
+.issues-table th,
+.issues-table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #d0d7de;
+}
+
+.issues-table th {
+  background-color: #f6f8fa;
+  font-weight: 600;
+  color: #24292f;
+}
+
+.issues-table tr:hover {
+  background-color: #f6f8fa;
+}
+
+.issues-table tr:last-child td {
+  border-bottom: none;
+}
+
+.issue-id {
+  color: #57606a;
+  font-family: monospace;
+  font-size: 12px;
+}
+
+.issue-title {
+  color: #24292f;
+  font-weight: 500;
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.issue-author {
+  color: #57606a;
+}
+
+.issue-date {
+  color: #57606a;
+  font-size: 12px;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.status-open {
+  background-color: #dafbe1;
+  color: #1a7f37;
+}
+
+.status-closed {
+  background-color: #ffebe9;
+  color: #cf222e;
+}
+
+.status-not-planned {
+  background-color: #fff8c5;
+  color: #7d4e00;
+}
+
+.no-issues {
+  text-align: center;
+  padding: 40px;
+  color: #57606a;
+  font-size: 14px;
+}
