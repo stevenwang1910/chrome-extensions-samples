@@ -1,0 +1,45 @@
+{
+  "manifest_version": 3,
+  "name": "网易新闻纯净阅读模式",
+  "description": "为网易新闻详情页面提供纯净阅读模式，隐藏广告、侧边栏、评论区等干扰元素，专注于阅读内容",
+  "version": "1.0",
+  "icons": {
+    "16": "images/icon-16.png",
+    "32": "images/icon-32.png",
+    "48": "images/icon-48.png",
+    "128": "images/icon-128.png"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_icon": {
+      "16": "images/icon-16.png",
+      "32": "images/icon-32.png",
+      "48": "images/icon-48.png",
+      "128": "images/icon-128.png"
+    },
+    "default_title": "切换阅读模式"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.163.com/*",
+        "*://localhost:*/*",
+        "*://127.0.0.1:*/*"
+      ],
+      "js": ["content.js"],
+      "css": ["reader-mode.css"],
+      "run_at": "document_end"
+    }
+  ],
+  "permissions": ["scripting", "activeTab", "storage"],
+  "commands": {
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+R",
+        "mac": "Command+Shift+R"
+      }
+    }
+  }
+}
