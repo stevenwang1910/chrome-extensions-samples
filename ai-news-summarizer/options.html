@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI新闻总结助手 - 配置</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: #f0f2f5;
+      padding: 40px 20px;
+      line-height: 1.6;
+    }
+    
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+    
+    /* 头部 */
+    .header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    
+    .header h1 {
+      font-size: 22px;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-bottom: 6px;
+    }
+    
+    .header p {
+      font-size: 13px;
+      color: #888;
+    }
+    
+    /* API列表 */
+    .api-list {
+      margin-bottom: 16px;
+    }
+    
+    .api-item {
+      background: #fff;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      overflow: hidden;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+      transition: box-shadow 0.2s;
+    }
+    
+    .api-item:hover {
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    
+    .api-item.active {
+      border-left: 3px solid #4CAF50;
+    }
+    
+    /* API头部 */
+    .api-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px;
+      background: #fafafa;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.15s;
+    }
+    
+    .api-header:hover {
+      background: #f5f5f5;
+    }
+    
+    .api-item.active .api-header {
+      background: #f6fdf6;
+    }
+    
+    .api-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #333;
+    }
+    
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #ccc;
+    }
+    
+    .api-item.active .status-dot {
+      background: #4CAF50;
+    }
+    
+    .expand-icon {
+      width: 16px;
+      height: 16px;
+      color: #999;
+      transition: transform 0.2s;
+    }
+    
+    .api-item.expanded .expand-icon {
+      transform: rotate(180deg);
+    }
+    
+    /* API内容 */
+    .api-content {
+      display: none;
+      padding: 18px;
+      border-top: 1px solid #f0f0f0;
+    }
+    
+    .api-item.expanded .api-content {
+      display: block;
+    }
+    
+    /* 表单 */
+    .form-group {
+      margin-bottom: 14px;
+    }
+    
+    .form-group:last-child {
+      margin-bottom: 0;
+    }
+    
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      color: #555;
+      margin-bottom: 5px;
+    }
+    
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 8px 11px;
+      border: 1px solid #e0e0e0;
+      border-radius: 5px;
+      font-size: 13px;
+      color: #333;
+      background: #fff;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: #4CAF50;
+      box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.08);
+    }
+    
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    
+    .help-text {
+      font-size: 11px;
+      color: #aaa;
+      margin-top: 4px;
+    }
+    
+    /* 操作按钮 */
+    .api-actions {
+      display: flex;
+      gap: 8px;
+      padding-top: 14px;
+      margin-top: 14px;
+      border-top: 1px solid #f0f0f0;
+    }
+    
+    .btn {
+      padding: 6px 14px;
+      border: none;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    
+    .btn-text {
+      background: transparent;
+      color: #666;
+      padding: 6px 10px;
+    }
+    
+    .btn-text:hover {
+      background: #f5f5f5;
+      color: #333;
+    }
+    
+    .btn-text.danger {
+      color: #d32f2f;
+    }
+    
+    .btn-text.danger:hover {
+      background: #ffebee;
+    }
+    
+    .btn-primary {
+      background: #4CAF50;
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background: #43a047;
+    }
+    
+    .btn-secondary {
+      background: #f5f5f5;
+      color: #555;
+      border: 1px solid #e0e0e0;
+    }
+    
+    .btn-secondary:hover {
+      background: #eeeeee;
+    }
+    
+    /* 添加按钮 */
+    .add-api-btn {
+      width: 100%;
+      padding: 12px;
+      border: 1px dashed #ccc;
+      background: transparent;
+      color: #666;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    
+    .add-api-btn:hover {
+      border-color: #4CAF50;
+      color: #4CAF50;
+      background: rgba(76, 175, 80, 0.02);
+    }
+    
+    /* 说明区域 */
+    .info-section {
+      margin-top: 32px;
+      padding: 16px 18px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+    }
+    
+    .info-section h3 {
+      font-size: 13px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 10px;
+    }
+    
+    .info-section ul {
+      margin-left: 16px;
+      font-size: 12px;
+      color: #666;
+      line-height: 1.8;
+    }
+    
+    .info-section li {
+      margin-bottom: 4px;
+    }
+    
+    /* 空状态 */
+    .empty-state {
+      text-align: center;
+      padding: 48px 20px;
+      color: #999;
+      font-size: 13px;
+    }
+    
+    /* 提示消息 */
+    .save-status {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 10px 18px;
+      border-radius: 6px;
+      color: white;
+      font-size: 13px;
+      font-weight: 500;
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: all 0.2s;
+      z-index: 1000;
+    }
+    
+    .save-status.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    .save-status.success {
+      background: #4CAF50;
+    }
+    
+    .save-status.error {
+      background: #f44336;
+    }
+    
+    /* 自定义模型输入 */
+    .custom-model-input {
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>API 配置</h1>
+      <p>配置大模型API，支持添加多个渠道</p>
+    </div>
+
+    <div id="apiList" class="api-list"></div>
+
+    <button class="add-api-btn" id="addApiBtn">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="12" y1="5" x2="12" y2="19"/>
+        <line x1="5" y1="12" x2="19" y2="12"/>
+      </svg>
+      添加API配置
+    </button>
+
+    <div class="info-section">
+      <h3>配置说明</h3>
+      <ul>
+        <li>支持配置多个OpenAI兼容格式的API（如OpenAI、Azure、第三方代理等）</li>
+        <li>API URL格式：https://api.example.com/v1/chat/completions</li>
+        <li>点击配置项可展开/收起编辑区域</li>
+        <li>绿色圆点表示当前默认启用的API</li>
+        <li>API Key将被安全地存储在浏览器本地</li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="saveStatus" class="save-status"></div>
+
+  <script src="options.js"></script>
+</body>
+</html>
