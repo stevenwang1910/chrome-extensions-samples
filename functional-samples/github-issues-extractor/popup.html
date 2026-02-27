@@ -2,67 +2,238 @@
 <html>
 <head>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 10px;
-      width: 600px;
+    * {
+      box-sizing: border-box;
     }
-    h1 {
-      font-size: 16px;
-      margin-bottom: 10px;
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      padding: 0;
+      margin: 0;
+      width: 700px;
+      min-height: 300px;
+      background-color: #f6f8fa;
+    }
+    .header {
+      background: linear-gradient(135deg, #24292e 0%, #1a1e22 100%);
+      color: white;
+      padding: 16px 20px;
+      border-radius: 0;
+      margin-bottom: 16px;
+    }
+    .header h1 {
+      font-size: 18px;
+      margin: 0;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .header .issue-count {
+      font-size: 12px;
+      font-weight: normal;
+      color: #8b949e;
+      margin-top: 4px;
+    }
+    .content {
+      padding: 0 16px 16px;
+    }
+    .loading {
+      text-align: center;
+      padding: 40px 20px;
+      color: #586069;
+    }
+    .loading-spinner {
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      border: 3px solid #e1e4e8;
+      border-top-color: #0969da;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 12px;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .table-container {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      overflow: hidden;
+      max-height: 400px;
+      overflow-y: auto;
     }
     table {
       width: 100%;
       border-collapse: collapse;
+      font-size: 13px;
     }
-    th, td {
-      border: 1px solid #ddd;
-      padding: 8px;
-      text-align: left;
+    thead {
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
     th {
-      background-color: #f2f2f2;
+      background-color: #f6f8fa;
+      border-bottom: 1px solid #d0d7de;
+      padding: 12px 16px;
+      text-align: left;
+      font-weight: 600;
+      color: #24292e;
       font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
     td {
-      font-size: 11px;
+      border-bottom: 1px solid #e1e4e8;
+      padding: 12px 16px;
+      color: #24292e;
+      vertical-align: top;
     }
-    .loading {
+    tr:hover td {
+      background-color: #f6f8fa;
+    }
+    tr:last-child td {
+      border-bottom: none;
+    }
+    .issue-id {
+      font-family: 'SF Mono', Monaco, monospace;
+      font-size: 12px;
+      color: #57606a;
+      font-weight: 500;
+    }
+    .issue-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .status-open {
+      background-color: #dafbe1;
+      color: #1a7f37;
+    }
+    .status-closed {
+      background-color: #ffebe9;
+      color: #cf222e;
+    }
+    .status-merged {
+      background-color: #f0f9ff;
+      color: #0969da;
+    }
+    .status-unknown {
+      background-color: #f6f8fa;
+      color: #57606a;
+    }
+    .issue-title {
+      font-weight: 500;
+      color: #24292e;
+      max-width: 250px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .issue-author {
+      color: #57606a;
+      font-size: 12px;
+    }
+    .issue-date {
+      color: #57606a;
+      font-size: 12px;
+      font-family: 'SF Mono', Monaco, monospace;
+    }
+    .empty-state {
       text-align: center;
-      padding: 20px;
+      padding: 40px 20px;
+      color: #57606a;
+    }
+    .empty-state-icon {
+      font-size: 32px;
+      margin-bottom: 12px;
+    }
+    .error-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: #cf222e;
     }
     .debug {
-      margin-top: 10px;
-      padding: 10px;
-      background: #f0f0f0;
-      border: 1px solid #ccc;
-      font-size: 10px;
-      max-height: 200px;
+      margin-top: 16px;
+      padding: 12px;
+      background: #f6f8fa;
+      border: 1px solid #d0d7de;
+      border-radius: 6px;
+      font-size: 11px;
+      max-height: 150px;
       overflow-y: auto;
     }
+    .debug h3 {
+      margin: 0 0 8px 0;
+      font-size: 11px;
+      color: #57606a;
+      text-transform: uppercase;
+    }
+    .debug pre {
+      margin: 0;
+      white-space: pre-wrap;
+      word-break: break-all;
+      color: #24292e;
+    }
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .dot-open { background-color: #1a7f37; }
+    .dot-closed { background-color: #cf222e; }
+    .dot-merged { background-color: #8250df; }
+    .dot-unknown { background-color: #6e7781; }
   </style>
 </head>
 <body>
-  <h1>GitHub Issues</h1>
-  <div id="loading" class="loading">Loading...</div>
-  <div id="content" style="display: none;">
-    <table id="issuesTable">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Status</th>
-          <th>Title</th>
-          <th>Author</th>
-          <th>Date</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
+  <div class="header">
+    <h1>
+      <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor">
+        <path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z"></path>
+        <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Z"></path>
+      </svg>
+      GitHub Issues Extractor
+    </h1>
+    <div class="issue-count" id="issueCount">Loading...</div>
   </div>
-  <div id="debug" class="debug" style="display: none;">
-    <h3>Debug Info:</h3>
-    <div id="debugLog"></div>
+  
+  <div class="content">
+    <div id="loading" class="loading">
+      <div class="loading-spinner"></div>
+      <div>Extracting issues from current page...</div>
+    </div>
+    
+    <div id="content" style="display: none;">
+      <div class="table-container">
+        <table id="issuesTable">
+          <thead>
+            <tr>
+              <th style="width: 60px;">ID</th>
+              <th style="width: 90px;">Status</th>
+              <th>Title</th>
+              <th style="width: 100px;">Author</th>
+              <th style="width: 100px;">Date</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+    
+    <div id="debug" class="debug" style="display: none;">
+      <h3>Debug Info</h3>
+      <div id="debugLog"></div>
+    </div>
   </div>
+  
   <script src="popup.js"></script>
 </body>
 </html>
