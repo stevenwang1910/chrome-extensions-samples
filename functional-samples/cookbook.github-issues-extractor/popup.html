@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GitHub Issues Extractor</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>GitHub Issues Extractor</h1>
+      <p class="subtitle">Extract and display issues from GitHub</p>
+    </header>
+
+    <div class="controls">
+      <button id="extractBtn" class="btn-primary">
+        <span class="icon">📋</span>
+        Extract Issues
+      </button>
+      <button id="exportBtn" class="btn-secondary" disabled>
+        <span class="icon">💾</span>
+        Export CSV
+      </button>
+    </div>
+
+    <div id="status" class="status"></div>
+
+    <div id="results" class="results hidden">
+      <div class="table-container">
+        <table id="issuesTable">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Status</th>
+              <th>Title</th>
+              <th>Author</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody id="issuesTableBody">
+          </tbody>
+        </table>
+      </div>
+      <div class="summary">
+        <span id="totalIssues">Total: 0 issues</span>
+      </div>
+    </div>
+
+    <div id="emptyState" class="empty-state">
+      <div class="empty-icon">🔍</div>
+      <p>Navigate to a GitHub Issues page and click "Extract Issues" to get started.</p>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
