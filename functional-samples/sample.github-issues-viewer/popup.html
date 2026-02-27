@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./popup.css" />
+  </head>
+  <body>
+    <h1>GitHub Issues Viewer</h1>
+    <button id="refresh">Refresh Data</button>
+    <div id="status"></div>
+    <div id="table-container">
+      <table id="issues-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Date</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="issues-body"></tbody>
+      </table>
+    </div>
+    <script src="./popup.js" type="module"></script>
+  </body>
+</html>
