@@ -1,0 +1,269 @@
+:root {
+  --primary-color: #2ea44f;
+  --primary-hover: #2c974b;
+  --secondary-color: #6f42c1;
+  --bg-color: #f6f8fa;
+  --card-bg: #ffffff;
+  --text-color: #24292f;
+  --text-secondary: #57606a;
+  --border-color: #d0d7de;
+  --open-color: #1a7f37;
+  --closed-color: #cf222e;
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  min-width: 600px;
+  min-height: 400px;
+}
+
+.container {
+  padding: 16px;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+h1 {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-color);
+  margin-bottom: 4px;
+}
+
+.subtitle {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.controls {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+  justify-content: center;
+}
+
+button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+}
+
+.btn-secondary {
+  background-color: var(--card-bg);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background-color: var(--bg-color);
+}
+
+.btn-secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.icon {
+  font-size: 14px;
+}
+
+.status {
+  text-align: center;
+  padding: 8px;
+  margin-bottom: 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  display: none;
+}
+
+.status.show {
+  display: block;
+}
+
+.status.info {
+  background-color: #ddf4ff;
+  color: #0969da;
+}
+
+.status.error {
+  background-color: #ffebe9;
+  color: #cf222e;
+}
+
+.status.success {
+  background-color: #dafbe1;
+  color: #1a7f37;
+}
+
+.results {
+  background-color: var(--card-bg);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.results.hidden {
+  display: none;
+}
+
+.table-container {
+  max-height: 350px;
+  overflow-y: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+th {
+  background-color: var(--bg-color);
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-color);
+  border-bottom: 1px solid var(--border-color);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+td {
+  padding: 12px;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-color);
+}
+
+tr:hover {
+  background-color: var(--bg-color);
+}
+
+.issue-id {
+  font-weight: 600;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.issue-title {
+  max-width: 250px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.status-badge.open {
+  background-color: #dafbe1;
+  color: var(--open-color);
+}
+
+.status-badge.closed {
+  background-color: #ffebe9;
+  color: var(--closed-color);
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.status-badge.open .status-dot {
+  background-color: var(--open-color);
+}
+
+.status-badge.closed .status-dot {
+  background-color: var(--closed-color);
+}
+
+.author {
+  color: var(--text-secondary);
+}
+
+.date {
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.summary {
+  padding: 12px;
+  background-color: var(--bg-color);
+  border-top: 1px solid var(--border-color);
+  font-size: 13px;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-secondary);
+}
+
+.empty-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.empty-state p {
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Scrollbar styling */
+.table-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.table-container::-webkit-scrollbar-track {
+  background: var(--bg-color);
+}
+
+.table-container::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}
