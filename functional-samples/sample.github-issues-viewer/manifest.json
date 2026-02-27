@@ -1,0 +1,16 @@
+{
+  "name": "GitHub Issues Viewer",
+  "version": "1.0",
+  "description": "Extracts and displays GitHub issues in a table format.",
+  "manifest_version": 3,
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://github.com/GoogleChrome/chrome-extensions-samples/issues*"],
+      "js": ["content.js"]
+    }
+  ],
+  "permissions": ["activeTab", "scripting", "storage"]
+}
