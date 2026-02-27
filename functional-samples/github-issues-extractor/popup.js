@@ -1,137 +1,306 @@
 document.addEventListener('DOMContentLoaded', function() {
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
     const tab = tabs[0];
-    if (!tab.url.includes('github.com/GoogleChrome/chrome-extensions-samples/issues')) {
-      document.getElementById('loading').textContent = 'Please navigate to GitHub issues page';
+    
+    if (!tab.url.includes('github.com')) {
+      showError('Please navigate to a GitHub repository issues page');
       return;
     }
-
+    
+    const urlMatch = tab.url.match(/github\.com\/([^\/]+)\/([^\/]+)(\/issues)?/);
+    if (!urlMatch) {
+      showError('Please navigate to a GitHub repository issues page');
+      return;
+    }
+    
+    const owner = urlMatch[1];
+    const repo = urlMatch[2];
+    
+    if (owner === 'orgs' || owner === 'users' || owner === 'search') {
+      showError('Please navigate to a specific repository issues page');
+      return;
+    }
+    
+    document.getElementById('loading').textContent = `Extracting issues from ${owner}/${repo}...`;
+    
     chrome.scripting.executeScript({
       target: {tabId: tab.id},
-      function: extractIssues
+      function: extractIssuesFromPage
     }, function(results) {
-      document.getElementById('loading').style.display = 'none';
-      document.getElementById('content').style.display = 'block';
-      
-      const issues = results[0].result;
-      const tbody = document.querySelector('#issuesTable tbody');
-      
-      // Show debug info
-      const debugDiv = document.getElementById('debug');
-      const debugLog = document.getElementById('debugLog');
-      debugLog.innerHTML = '<pre>' + JSON.stringify(issues, null, 2) + '</pre>';
-      debugDiv.style.display = 'block';
-      
-      if (issues.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5">No issues found</td></tr>';
+      if (chrome.runtime.lastError) {
+        showError('Failed to extract data: ' + chrome.runtime.lastError.message);
         return;
       }
       
-      issues.forEach(issue => {
-        const row = tbody.insertRow();
-        row.insertCell(0).textContent = issue.id;
-        row.insertCell(1).textContent = issue.status;
-        row.insertCell(2).textContent = issue.title;
-        row.insertCell(3).textContent = issue.author;
-        row.insertCell(4).textContent = issue.date;
-      });
+      if (!results || !results[0]) {
+        showError('No data returned from page');
+        return;
+      }
+      
+      const result = results[0].result;
+      
+      if (!result) {
+        showError('Could not find issues data on this page');
+        return;
+      }
+      
+      if (result.error) {
+        showError(result.error);
+        return;
+      }
+      
+      displayIssues(result.issues, result.owner || owner, result.repo || repo);
     });
   });
 });
 
-function extractIssues() {
-  console.log('extractIssues called');
-  const issues = [];
-  
-  // Try to find issues using various approaches
-  
-  // Approach 1: Check if page is static HTML from the saved file
-  const bodyText = document.body.textContent || '';
-  const issueRegex = /Status: ([^\n]+)\.\s*#(\d+)\s+In GoogleChrome\/chrome-extensions-samples;\s*·\s*(\S+)\s+opened\s+on\s+(\w+ \d+, \d+)/g;
-  
-  let match;
-  while ((match = issueRegex.exec(bodyText)) !== null) {
-    issues.push({
-      id: '#' + match[2],
-      status: match[1],
-      title: 'Issue #' + match[2],
-      author: match[3],
-      date: match[4]
-    });
-  }
-  
-  console.log('Found', issues.length, 'issues using regex approach');
-  
-  // If no issues found with regex, try DOM approach
-  if (issues.length === 0) {
-    // Try multiple selectors to find issue elements
-    const selectors = [
-      'div.js-issue-row',
-      'div.js-discussion-item',
-      'div.issue-list-item',
-      'div[id^="issue_"]',
-      'article[id^="issue_"]',
-      'ul.js-issue-association-list li',
-      'div[data-hovercard-type="issue"]'
-    ];
+function showError(message) {
+  const loadingEl = document.getElementById('loading');
+  loadingEl.textContent = message;
+  loadingEl.style.color = '#cf222e';
+  loadingEl.classList.add('error');
+}
+
+function extractIssuesFromPage() {
+  try {
+    const issues = [];
+    let owner = '';
+    let repo = '';
     
-    let allElements = [];
-    selectors.forEach(selector => {
-      const elements = document.querySelectorAll(selector);
-      console.log(`Found ${elements.length} elements for selector: ${selector}`);
-      allElements = allElements.concat(Array.from(elements));
-    });
+    const urlMatch = window.location.pathname.match(/\/([^\/]+)\/([^\/]+)(\/issues)?/);
+    if (urlMatch) {
+      owner = urlMatch[1];
+      repo = urlMatch[2];
+    }
     
-    // Remove duplicates
-    const uniqueElements = [...new Set(allElements)];
-    console.log('Total unique elements:', uniqueElements.length);
-    
-    uniqueElements.forEach(element => {
-      // Try multiple ways to find each element
-      const titleElement = 
-        element.querySelector('a.js-issue-title') || 
-        element.querySelector('a[data-hovercard-type="issue"]') ||
-        element.querySelector('a.issue-title') ||
-        element.querySelector('a');
-        
-      const idElement = 
-        element.querySelector('span.js-issue-number') ||
-        element.querySelector('span.issue-number') ||
-        element.querySelector('a[href*="/issues/"]');
-        
-      const statusElement = 
-        element.querySelector('span.State') ||
-        element.querySelector('span.label') ||
-        element.querySelector('span[data-state]');
-        
-      const authorElement = 
-        element.querySelector('a.author') ||
-        element.querySelector('a[data-hovercard-type="user"]') ||
-        element.querySelector('span.author a');
-        
-      const timeElement = 
-        element.querySelector('time') ||
-        element.querySelector('relative-time');
-      
-      console.log('Element check:', {title: !!titleElement, id: !!idElement, status: !!statusElement, author: !!authorElement, time: !!timeElement});
-      
-      if (titleElement && idElement) {
-        let id = idElement.textContent ? idElement.textContent.trim() : '';
-        if (!id && idElement.href) {
-          id = idElement.href.match(/\d+/)[0];
+    const reactApp = document.querySelector('react-app[app-name="issues-react"]');
+    if (reactApp) {
+      const embeddedData = reactApp.querySelector('script[data-target="react-app.embeddedData"]');
+      if (embeddedData) {
+        try {
+          const data = JSON.parse(embeddedData.textContent);
+          const preloadedQueries = data.payload?.preloadedQueries;
+          
+          if (preloadedQueries && preloadedQueries.length > 0) {
+            for (const query of preloadedQueries) {
+              const repository = query.result?.data?.repository;
+              if (repository && repository.nameWithOwner) {
+                const parts = repository.nameWithOwner.split('/');
+                owner = parts[0] || owner;
+                repo = parts[1] || repo;
+              }
+              
+              const edges = repository?.search?.edges || [];
+              for (const edge of edges) {
+                const node = edge.node;
+                if (node && node.__typename === 'Issue') {
+                  issues.push({
+                    id: node.number,
+                    title: node.title,
+                    status: node.state,
+                    author: node.author?.login || 'Unknown',
+                    date: node.createdAt,
+                    url: `https://github.com/${owner}/${repo}/issues/${node.number}`
+                  });
+                }
+              }
+            }
+          }
+        } catch (e) {
+          console.log('Failed to parse embeddedData:', e);
         }
+      }
+    }
+    
+    if (issues.length === 0) {
+      const issueLinks = document.querySelectorAll('a[href*="/issues/"]');
+      const processedIds = new Set();
+      
+      issueLinks.forEach(link => {
+        const href = link.getAttribute('href');
+        const issueMatch = href.match(/\/([^\/]+)\/([^\/]+)\/issues\/(\d+)/);
         
-        issues.push({
-          id: id,
-          status: statusElement ? statusElement.textContent.trim() : 'Unknown',
-          title: titleElement.textContent.trim(),
-          author: authorElement ? authorElement.textContent.trim() : 'Unknown',
-          date: timeElement ? (timeElement.getAttribute('datetime') || timeElement.getAttribute('title')).split('T')[0] : 'Unknown'
-        });
+        if (issueMatch && !processedIds.has(issueMatch[3])) {
+          const issueId = issueMatch[3];
+          processedIds.add(issueId);
+          
+          owner = issueMatch[1];
+          repo = issueMatch[2];
+          
+          const row = link.closest('[role="row"], [role="listitem"], tr, li, div[class*="Item"], div[class*="Row"]');
+          
+          let title = link.getAttribute('title') || link.textContent.trim();
+          if (title.startsWith('#')) {
+            title = '';
+          }
+          
+          if (!title && row) {
+            const titleEl = row.querySelector('a[data-hovercard-type="issue"], a[class*="title"], [class*="title"]');
+            if (titleEl) {
+              title = titleEl.textContent.trim();
+            }
+          }
+          
+          if (!title) {
+            const parent = link.parentElement;
+            if (parent) {
+              const nextSibling = link.nextElementSibling;
+              if (nextSibling && nextSibling.textContent.trim() && !nextSibling.textContent.trim().startsWith('#')) {
+                title = nextSibling.textContent.trim();
+              }
+            }
+          }
+          
+          let status = 'OPEN';
+          if (row) {
+            const statusEl = row.querySelector('[class*="closed"], [class*="CLOSED"], [aria-label*="closed"], [aria-label*="Closed"]');
+            if (statusEl) {
+              status = 'CLOSED';
+            }
+            
+            const openIcon = row.querySelector('[class*="open"], [aria-label*="open"], [aria-label*="Open"]');
+            if (openIcon && !statusEl) {
+              status = 'OPEN';
+            }
+          }
+          
+          let author = 'Unknown';
+          if (row) {
+            const authorLink = row.querySelector('a[data-hovercard-type="user"], a[href*="/users/"], [class*="author"]');
+            if (authorLink) {
+              const href = authorLink.getAttribute('href') || '';
+              const authorMatch = href.match(/\/([^\/]+)$/);
+              if (authorMatch) {
+                author = authorMatch[1];
+              } else {
+                author = authorLink.textContent.trim();
+              }
+            }
+          }
+          
+          let date = '';
+          if (row) {
+            const timeEl = row.querySelector('time, relative-time, [datetime]');
+            if (timeEl) {
+              date = timeEl.getAttribute('datetime') || timeEl.getAttribute('title') || timeEl.textContent.trim();
+            }
+          }
+          
+          if (title) {
+            issues.push({
+              id: parseInt(issueId),
+              title: title,
+              status: status,
+              author: author,
+              date: date,
+              url: `https://github.com/${owner}/${repo}/issues/${issueId}`
+            });
+          }
+        }
+      });
+    }
+    
+    if (issues.length === 0) {
+      const allLinks = Array.from(document.querySelectorAll('a'));
+      const issuePattern = /\/issues\/\d+$/;
+      const processedUrls = new Set();
+      
+      allLinks.forEach(link => {
+        const href = link.getAttribute('href');
+        if (href && issuePattern.test(href) && !processedUrls.has(href)) {
+          processedUrls.add(href);
+          
+          const issueMatch = href.match(/\/([^\/]+)\/([^\/]+)\/issues\/(\d+)$/);
+          if (issueMatch) {
+            const issueId = issueMatch[3];
+            owner = issueMatch[1];
+            repo = issueMatch[2];
+            
+            const title = link.textContent.trim() || `Issue #${issueId}`;
+            
+            issues.push({
+              id: parseInt(issueId),
+              title: title,
+              status: 'OPEN',
+              author: 'Unknown',
+              date: '',
+              url: `https://github.com${href}`
+            });
+          }
+        }
+      });
+    }
+    
+    if (issues.length === 0) {
+      return { error: 'No issues found on this page. Please make sure you are on a GitHub issues page and the page has finished loading.' };
+    }
+    
+    const uniqueIssues = [];
+    const seenIds = new Set();
+    issues.forEach(issue => {
+      if (!seenIds.has(issue.id)) {
+        seenIds.add(issue.id);
+        uniqueIssues.push(issue);
       }
     });
+    
+    uniqueIssues.sort((a, b) => b.id - a.id);
+    
+    return { issues: uniqueIssues, owner: owner, repo: repo };
+  } catch (e) {
+    return { error: 'Error extracting page data: ' + e.message };
   }
+}
+
+function displayIssues(issues, owner, repo) {
+  document.getElementById('loading').style.display = 'none';
   
-  console.log('Returning issues:', issues.length);
-  return issues;
+  const repoInfo = document.getElementById('repo-info');
+  repoInfo.textContent = `Repository: ${owner}/${repo} | Issues found: ${issues.length}`;
+  repoInfo.style.display = 'block';
+  
+  document.getElementById('content').style.display = 'block';
+  
+  const tbody = document.querySelector('#issuesTable tbody');
+  tbody.innerHTML = '';
+  
+  issues.forEach(issue => {
+    const row = tbody.insertRow();
+    
+    const idCell = row.insertCell(0);
+    idCell.innerHTML = `<a href="${issue.url}" target="_blank">#${issue.id}</a>`;
+    
+    const statusCell = row.insertCell(1);
+    const status = issue.status.toLowerCase();
+    const statusClass = status === 'open' ? 'status-open' : 'status-closed';
+    statusCell.innerHTML = `<span class="status-badge ${statusClass}">${issue.status}</span>`;
+    
+    const titleCell = row.insertCell(2);
+    titleCell.textContent = issue.title;
+    titleCell.style.maxWidth = '280px';
+    titleCell.style.overflow = 'hidden';
+    titleCell.style.textOverflow = 'ellipsis';
+    titleCell.style.whiteSpace = 'nowrap';
+    titleCell.title = issue.title;
+    
+    const authorCell = row.insertCell(3);
+    authorCell.textContent = issue.author;
+    
+    const dateCell = row.insertCell(4);
+    if (issue.date) {
+      try {
+        const date = new Date(issue.date);
+        dateCell.textContent = date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+      } catch (e) {
+        dateCell.textContent = issue.date;
+      }
+    } else {
+      dateCell.textContent = '-';
+    }
+  });
+  
+  const debugDiv = document.getElementById('debug');
+  const debugLog = document.getElementById('debugLog');
+  debugLog.innerHTML = `<pre>Extracted from current page DOM\nTotal issues: ${issues.length}\nSource: Dynamic extraction</pre>`;
+  debugDiv.style.display = 'block';
 }
