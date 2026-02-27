@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "GitHub Issues Viewer",
+  "version": "1.0",
+  "description": "Extract and display GitHub Issues information in a table format",
+  "icons": {
+    "16": "images/icon-16.png",
+    "32": "images/icon-32.png",
+    "48": "images/icon-48.png",
+    "128": "images/icon-128.png"
+  },
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "js": ["scripts/content.js"],
+      "matches": ["https://github.com/*/issues"]
+    }
+  ],
+  "host_permissions": ["https://github.com/*"],
+  "permissions": ["activeTab", "scripting"]
+}
