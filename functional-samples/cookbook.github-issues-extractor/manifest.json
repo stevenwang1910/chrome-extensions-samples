@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "GitHub Issues Extractor",
+  "version": "1.0",
+  "description": "Extracts issues information from GitHub and displays them in a table format.",
+  "icons": {
+    "16": "images/icon-16.svg",
+    "48": "images/icon-48.svg",
+    "128": "images/icon-128.svg"
+  },
+  "action": {
+    "default_title": "Extract GitHub Issues",
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://github.com/GoogleChrome/chrome-extensions-samples/issues*"
+      ],
+      "js": ["content-script.js"]
+    }
+  ],
+  "permissions": ["activeTab", "scripting"]
+}
