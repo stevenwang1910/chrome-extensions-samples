@@ -1,0 +1,881 @@
+<!doctype html>
+<html>
+  <head>
+    <title>GitHub Issues Simulator</title>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica,
+          Arial, sans-serif;
+        max-width: 1200px;
+        margin: 20px auto;
+        padding: 20px;
+        background: #f6f8fa;
+      }
+      .Box {
+        background: white;
+        border: 1px solid #e1e4e8;
+        border-radius: 6px;
+      }
+      .Box-header {
+        padding: 16px;
+        border-bottom: 1px solid #e1e4e8;
+        background: #f6f8fa;
+      }
+      .Box-row {
+        padding: 16px;
+        border-bottom: 1px solid #e1e4e8;
+      }
+      .Box-row:hover {
+        background: #f6f8fa;
+      }
+      .StateLabel {
+        display: inline-block;
+        padding: 3px 12px;
+        font-size: 12px;
+        font-weight: 500;
+        border-radius: 2em;
+      }
+      .StateLabel--green {
+        background: #22863a;
+        color: white;
+      }
+      .StateLabel--red {
+        background: #d73a49;
+        color: white;
+      }
+      .StateLabel--purple {
+        background: #6f42c1;
+        color: white;
+      }
+      .markdown-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #24292e;
+        text-decoration: none;
+      }
+      .markdown-title:hover {
+        color: #0366d6;
+      }
+      .text-small {
+        font-size: 12px;
+        color: #586069;
+        margin-top: 4px;
+      }
+      a {
+        color: #0366d6;
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      .debug-info {
+        margin-top: 20px;
+        padding: 15px;
+        background: #fff;
+        border: 1px solid #e1e4e8;
+        border-radius: 6px;
+      }
+      .debug-info pre {
+        white-space: pre-wrap;
+        font-size: 12px;
+      }
+      button {
+        padding: 8px 16px;
+        background: #2ea44f;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        margin: 10px 0;
+      }
+      button:hover {
+        background: #2c974b;
+      }
+      .test-result-pass {
+        color: green;
+        font-weight: bold;
+      }
+      .test-result-fail {
+        color: red;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>GitHub Issues Simulator</h1>
+    <p>This page simulates GitHub's DOM structure for testing the extension</p>
+
+    <button onclick="runExtractionTest()">Run Extraction Test</button>
+
+    <div class="Box">
+      <div class="Box-header">
+        <h2>Issues</h2>
+      </div>
+
+      <!-- Issue Row 1 - Open -->
+      <div
+        class="Box-row"
+        data-testid="issue-row"
+        data-tracking-id="issue_1477"
+      >
+        <div style="display: flex; align-items: flex-start; gap: 8px">
+          <span class="StateLabel StateLabel--green" aria-label="Open"
+            >Open</span
+          >
+          <div>
+            <div>
+              <a
+                id="issue_1477_link"
+                href="/GoogleChrome/chrome-extensions-samples/issues/1477"
+                data-testid="issue-title-link"
+                class="markdown-title"
+              >
+                Update manifest V3 examples with latest best practices
+              </a>
+            </div>
+            <div class="text-small">
+              <span>#1477 opened 2 days ago by </span>
+              <a
+                data-hovercard-type="user"
+                data-hovercard-url="/users/mattheimer/hovercard"
+                href="/mattheimer"
+                >mattheimer</a
+              >
+              <relative-time
+                datetime="2025-05-17T12:00:00Z"
+                title="May 17, 2025"
+                >2 days ago</relative-time
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Issue Row 2 - Closed -->
+      <div
+        class="Box-row"
+        data-testid="issue-row"
+        data-tracking-id="issue_1476"
+      >
+        <div style="display: flex; align-items: flex-start; gap: 8px">
+          <span class="StateLabel StateLabel--red" aria-label="Closed"
+            >Closed</span
+          >
+          <div>
+            <div>
+              <a
+                id="issue_1476_link"
+                href="/GoogleChrome/chrome-extensions-samples/issues/1476"
+                data-testid="issue-title-link"
+                class="markdown-title"
+              >
+                Fix bug in content script injection
+              </a>
+            </div>
+            <div class="text-small">
+              <span>#1476 opened on May 15 by </span>
+              <a
+                data-hovercard-type="user"
+                data-hovercard-url="/users/johndoe/hovercard"
+                href="/johndoe"
+                >johndoe</a
+              >
+              <relative-time
+                datetime="2025-05-15T08:30:00Z"
+                title="May 15, 2025"
+                >May 15</relative-time
+              >
+              <span> closed on May 16</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Issue Row 3 - Open with assignee -->
+      <div
+        class="Box-row"
+        data-testid="issue-row"
+        data-tracking-id="issue_1475"
+      >
+        <div style="display: flex; align-items: flex-start; gap: 8px">
+          <span class="StateLabel StateLabel--green" aria-label="Open"
+            >Open</span
+          >
+          <div>
+            <div>
+              <a
+                id="issue_1475_link"
+                href="/GoogleChrome/chrome-extensions-samples/issues/1475"
+                data-testid="issue-title-link"
+                class="markdown-title"
+              >
+                Add new API examples for Chrome 125
+              </a>
+            </div>
+            <div class="text-small">
+              <span>#1475 opened 1 week ago by </span>
+              <a
+                data-hovercard-type="user"
+                data-hovercard-url="/users/developer/hovercard"
+                href="/developer"
+                >developer</a
+              >
+              <relative-time
+                datetime="2025-05-10T14:20:00Z"
+                title="May 10, 2025"
+                >1 week ago</relative-time
+              >
+              <span> assigned to </span>
+              <a
+                data-hovercard-type="user"
+                data-hovercard-url="/users/assignee/hovercard"
+                href="/assignee"
+                >assignee</a
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Issue Row 4 - PR Merged -->
+      <div
+        class="Box-row"
+        data-testid="issue-row"
+        data-tracking-id="pull-request_1474"
+      >
+        <div style="display: flex; align-items: flex-start; gap: 8px">
+          <span class="StateLabel StateLabel--purple" aria-label="Merged"
+            >Merged</span
+          >
+          <div>
+            <div>
+              <a
+                id="pull-request_1474_link"
+                href="/GoogleChrome/chrome-extensions-samples/pull/1474"
+                data-testid="issue-title-link"
+                class="markdown-title"
+              >
+                Update documentation for sidePanel API
+              </a>
+            </div>
+            <div class="text-small">
+              <span>#1474 opened 3 weeks ago by </span>
+              <a
+                data-hovercard-type="user"
+                data-hovercard-url="/users/docs-writer/hovercard"
+                href="/docs-writer"
+                >docs-writer</a
+              >
+              <relative-time
+                datetime="2025-04-28T09:00:00Z"
+                title="Apr 28, 2025"
+                >3 weeks ago</relative-time
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Issue Row 5 - Classic format with SVG -->
+      <div class="js-issue-row" id="issue_1473">
+        <div style="display: flex; align-items: flex-start; gap: 8px">
+          <svg
+            aria-label="Open issue"
+            viewBox="0 0 16 16"
+            width="16"
+            height="16"
+            class="octicon octicon-issue-opened"
+          >
+            <circle
+              cx="8"
+              cy="8"
+              r="7"
+              fill="none"
+              stroke="green"
+              stroke-width="2"
+            />
+          </svg>
+          <div>
+            <div>
+              <a
+                href="/GoogleChrome/chrome-extensions-samples/issues/1473"
+                class="h4 markdown-title"
+              >
+                Bug: Content script not loading on certain pages
+              </a>
+            </div>
+            <div class="text-small">
+              #1473 opened on May 1 by
+              <a data-hovercard-type="user" href="/bugreporter">bugreporter</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="debug-info">
+      <h3>Extraction Results:</h3>
+      <div id="results"></div>
+    </div>
+
+    <script>
+      // Exact copy of extraction functions from content.js for testing
+      function cleanText(text) {
+        return text.replace(/\s+/g, ' ').trim();
+      }
+
+      function extractIssueData(row) {
+        try {
+          const issue = {
+            id: '',
+            title: '',
+            url: '',
+            submitter: 'Unknown',
+            submissionDate: 'Unknown',
+            status: 'Open'
+          };
+
+          const rowText = cleanText(row.textContent);
+          console.log('\n=== Processing Issue Row ===');
+          console.log('Full row text:', rowText.substring(0, 300));
+
+          // 1. Find issue ID and title - GitHub 2025 structure
+          let issueLink = row.querySelector(
+            'a[data-testid="issue-title-link"]'
+          );
+
+          if (!issueLink) {
+            const allLinks = row.querySelectorAll('a');
+            for (const link of allLinks) {
+              const href = link.getAttribute('href') || '';
+              if (
+                href.match(/\/(issues|pull)\/\d+$/) &&
+                link.textContent.trim().length > 10
+              ) {
+                issueLink = link;
+                break;
+              }
+            }
+          }
+
+          if (issueLink) {
+            const href = issueLink.getAttribute('href') || '';
+            const idMatch = href.match(/\/(issues|pull)\/(\d+)$/);
+            if (idMatch) {
+              issue.id = idMatch[2];
+              issue.title = cleanText(issueLink.textContent);
+              issue.url = 'https://github.com' + href;
+              console.log('Found from issue link:', {
+                id: issue.id,
+                title: issue.title
+              });
+            }
+          }
+
+          if (!issue.id) {
+            const idFromText = rowText.match(/#(\d+)/);
+            if (idFromText) {
+              issue.id = idFromText[1];
+              console.log('Found ID from text:', issue.id);
+            }
+          }
+
+          if (!issue.id) {
+            console.log('Skipping row - no issue ID found');
+            return null;
+          }
+
+          // 2. Extract Status - SIMPLIFIED and more reliable
+          console.log('\n--- Looking for status ---');
+
+          // First check for StateLabel (most reliable)
+          const stateEl = row.querySelector(
+            'span.StateLabel, span[class*="Label"]'
+          );
+          if (stateEl) {
+            const ariaLabel = stateEl.getAttribute('aria-label') || '';
+            const text = cleanText(stateEl.textContent);
+            const classes = stateEl.className.toLowerCase();
+            console.log('StateLabel found:', { ariaLabel, text, classes });
+
+            if (
+              ariaLabel.toLowerCase().includes('open') ||
+              text.toLowerCase().includes('open') ||
+              classes.includes('open')
+            ) {
+              issue.status = 'Open';
+            } else if (
+              ariaLabel.toLowerCase().includes('closed') ||
+              text.toLowerCase().includes('closed') ||
+              classes.includes('closed')
+            ) {
+              issue.status = 'Closed';
+            } else if (
+              ariaLabel.toLowerCase().includes('merged') ||
+              text.toLowerCase().includes('merged') ||
+              classes.includes('merged') ||
+              classes.includes('purple')
+            ) {
+              issue.status = 'Merged';
+            } else if (ariaLabel.toLowerCase().includes('draft')) {
+              issue.status = 'Draft';
+            }
+          }
+
+          // Check for SVG icons (another reliable method)
+          const svgIcons = row.querySelectorAll(
+            'svg[aria-label], svg[class*="octicon"]'
+          );
+          for (const svg of svgIcons) {
+            const ariaLabel = (
+              svg.getAttribute('aria-label') || ''
+            ).toLowerCase();
+            const classes = (svg.getAttribute('class') || '').toLowerCase();
+            console.log('SVG check:', ariaLabel, classes);
+
+            if (
+              ariaLabel.includes('open') ||
+              classes.includes('open') ||
+              classes.includes('issue')
+            ) {
+              issue.status = 'Open';
+              break;
+            } else if (
+              ariaLabel.includes('closed') ||
+              classes.includes('closed') ||
+              classes.includes('skip')
+            ) {
+              issue.status = 'Closed';
+              break;
+            } else if (
+              ariaLabel.includes('merge') ||
+              classes.includes('merge') ||
+              classes.includes('git-pull-request')
+            ) {
+              issue.status = 'Merged';
+              break;
+            }
+          }
+
+          // Check for status container
+          const statusContainer = row.querySelector(
+            'div[data-testid="issue-status"]'
+          );
+          if (statusContainer) {
+            const statusText = cleanText(
+              statusContainer.textContent
+            ).toLowerCase();
+            console.log('Status container text:', statusText);
+            if (statusText.includes('open')) issue.status = 'Open';
+            else if (statusText.includes('closed')) issue.status = 'Closed';
+            else if (statusText.includes('merged')) issue.status = 'Merged';
+          }
+
+          console.log('Final status:', issue.status);
+
+          // 3. Extract Submitter - IMPROVED detection
+          console.log('\n--- Looking for submitter ---');
+
+          // Find metadata section
+          let metaContainer = null;
+          const metaCandidates = row.querySelectorAll(
+            '.text-small, .f6, .color-fg-muted, span[class*="f6"], div[class*="f6"]'
+          );
+
+          for (const st of metaCandidates) {
+            const text = cleanText(st.textContent);
+            if (text.includes('opened') && text.includes('by')) {
+              metaContainer = st;
+              break;
+            }
+          }
+
+          if (!metaContainer) {
+            const allElements = row.querySelectorAll('*');
+            for (const el of allElements) {
+              const text = cleanText(el.textContent);
+              if (
+                text.includes('opened') &&
+                text.includes('by') &&
+                text.length < 200
+              ) {
+                metaContainer = el;
+                break;
+              }
+            }
+          }
+
+          const metaText = metaContainer
+            ? cleanText(metaContainer.textContent)
+            : rowText;
+          console.log('Meta text for extraction:', metaText);
+
+          // Method 1: Look for user links with position validation
+          const userLinks = row.querySelectorAll(
+            'a[data-hovercard-type="user"], a[data-hovercard-url*="/users/"]'
+          );
+          console.log('User links found:', userLinks.length);
+
+          const byPosition = metaText.toLowerCase().indexOf(' by ');
+
+          for (const link of userLinks) {
+            const linkText = cleanText(link.textContent);
+            if (!linkText || linkText.includes('[bot]') || linkText.length > 40)
+              continue;
+
+            const linkPosition = metaText.indexOf(linkText);
+            console.log(
+              'Checking user link:',
+              linkText,
+              'linkPos:',
+              linkPosition,
+              'byPos:',
+              byPosition
+            );
+
+            if (byPosition !== -1 && linkPosition > byPosition) {
+              const textBetween = metaText
+                .substring(byPosition + 4, linkPosition)
+                .trim();
+              if (!textBetween || textBetween.length < 15) {
+                issue.submitter = linkText;
+                console.log(
+                  'Submitter from user link after "by":',
+                  issue.submitter
+                );
+                break;
+              }
+            }
+          }
+
+          // Method 2: Regex patterns
+          if (issue.submitter === 'Unknown') {
+            const patterns = [
+              /by\s+@?([a-zA-Z0-9][a-zA-Z0-9_-]{0,39})(?=\s+(?:on|·|$|ago))/i,
+              /opened(?:.*?)by\s+@?([a-zA-Z0-9][a-zA-Z0-9_-]{1,39})/i,
+              /@([a-zA-Z0-9][a-zA-Z0-9_-]{2,39})(?=\s|$)/
+            ];
+
+            for (const pattern of patterns) {
+              const match = metaText.match(pattern);
+              if (match && match[1]) {
+                issue.submitter = match[1];
+                console.log(
+                  'Submitter from regex:',
+                  issue.submitter,
+                  pattern.toString()
+                );
+                break;
+              }
+            }
+          }
+
+          // Method 3: Last resort - any user link that appears after "opened"
+          if (issue.submitter === 'Unknown') {
+            for (const link of userLinks) {
+              const text = cleanText(link.textContent);
+              const _href = link.getAttribute('href') || '';
+              if (
+                text &&
+                !text.includes('[bot]') &&
+                text.length < 40 &&
+                _href.match(/^\/[a-zA-Z0-9_-]+$/)
+              ) {
+                const openedPos = metaText.indexOf('opened');
+                const linkPos = metaText.indexOf(text);
+                if (openedPos !== -1 && linkPos > openedPos) {
+                  issue.submitter = text;
+                  console.log('Submitter from last resort:', issue.submitter);
+                  break;
+                }
+              }
+            }
+          }
+
+          // 4. Extract Date - Look for relative time elements
+          console.log('\n--- Looking for date ---');
+
+          const timeElements = row.querySelectorAll(
+            'relative-time, time-ago, [data-testid="relative-time"], time'
+          );
+          for (const timeEl of timeElements) {
+            const datetime =
+              timeEl.getAttribute('datetime') || timeEl.getAttribute('title');
+            if (datetime) {
+              const date = new Date(datetime);
+              if (!isNaN(date.getTime())) {
+                issue.submissionDate = date.toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'short',
+                  day: 'numeric'
+                });
+                console.log('Date from time element:', issue.submissionDate);
+                break;
+              }
+            }
+          }
+
+          if (issue.submissionDate === 'Unknown') {
+            const dateEls = row.querySelectorAll('[datetime]');
+            for (const el of dateEls) {
+              const dt = el.getAttribute('datetime');
+              if (dt) {
+                const date = new Date(dt);
+                if (!isNaN(date.getTime())) {
+                  issue.submissionDate = date.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                  });
+                  console.log('Date from [datetime]:', issue.submissionDate);
+                  break;
+                }
+              }
+            }
+          }
+
+          if (issue.submissionDate === 'Unknown') {
+            const titledEls = row.querySelectorAll(
+              '[title*="2024"], [title*="2025"]'
+            );
+            for (const el of titledEls) {
+              const title = el.getAttribute('title') || '';
+              const dateMatch = title.match(
+                /(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{1,2},?\s+\d{4}/
+              );
+              if (dateMatch) {
+                const date = new Date(dateMatch[0]);
+                if (!isNaN(date.getTime())) {
+                  issue.submissionDate = date.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                  });
+                  console.log('Date from title:', issue.submissionDate);
+                  break;
+                }
+              }
+            }
+          }
+
+          if (issue.submissionDate === 'Unknown') {
+            const datePatterns = [
+              /opened\s+on\s+((?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{1,2}(?:,\s+\d{4})?)/i,
+              /opened\s+(\d+\s+(?:day|hour|minute|month|week)s?\s+ago)/i,
+              /on\s+((?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{1,2})/i
+            ];
+
+            for (const pattern of datePatterns) {
+              const match = metaText.match(pattern);
+              if (match) {
+                issue.submissionDate = match[1];
+                console.log('Date from text pattern:', issue.submissionDate);
+                break;
+              }
+            }
+          }
+
+          console.log('\n=== Final issue data ===', issue);
+          return issue;
+        } catch (e) {
+          console.error('Error extracting issue:', e);
+          return null;
+        }
+      }
+
+      function findIssueRows() {
+        console.log('=== Finding Issue Rows ===');
+
+        const selectors = [
+          'div[data-testid="issue-row"]',
+          'div[data-tracking-id^="issue_"]',
+          'div[data-tracking-id^="pull-request_"]',
+          '.js-issue-row',
+          'div[id^="issue_"]',
+          'div[role="row"].Box-row',
+          'div.Box-row--drag-item',
+          'div.Box-row'
+        ];
+
+        let rows = [];
+
+        for (const selector of selectors) {
+          const elements = document.querySelectorAll(selector);
+          console.log(`Selector "${selector}": ${elements.length} elements`);
+          if (elements.length > 0) {
+            rows = Array.from(elements);
+            break;
+          }
+        }
+
+        rows = rows.filter((row) => {
+          const text = row.textContent.toLowerCase();
+          return (
+            text.includes('opened') ||
+            text.includes('closed') ||
+            row.querySelector('a[href*="/issues/"]') ||
+            row.querySelector('a[href*="/pull/"]')
+          );
+        });
+
+        if (rows.length === 0) {
+          const allDivs = document.querySelectorAll('div');
+          for (const div of allDivs) {
+            const text = div.textContent;
+            if (
+              text.includes('opened') &&
+              text.match(/#\d+/) &&
+              text.includes('by')
+            ) {
+              rows.push(div);
+              if (rows.length >= 25) break;
+            }
+          }
+          console.log('Found via content search:', rows.length);
+        }
+
+        const uniqueRows = [];
+        const seenIds = new Set();
+
+        for (const row of rows) {
+          const text = row.textContent;
+          const idMatch = text.match(/#(\d+)/);
+
+          if (idMatch && !seenIds.has(idMatch[1])) {
+            const hasIssueLink =
+              row.querySelector('a[href*="/issues/"]') ||
+              row.querySelector('a[href*="/pull/"]');
+            const hasUserLink = row.querySelector(
+              'a[data-hovercard-type="user"]'
+            );
+
+            if (hasIssueLink || hasUserLink || text.includes('by')) {
+              seenIds.add(idMatch[1]);
+              uniqueRows.push(row);
+            }
+          }
+        }
+
+        console.log(`Unique valid rows: ${uniqueRows.length}`);
+        return uniqueRows;
+      }
+
+      function extractAllIssues() {
+        console.log('=== Extracting All Issues ===');
+
+        const rows = findIssueRows();
+        const issues = [];
+
+        for (const row of rows) {
+          const issue = extractIssueData(row);
+          if (issue && issue.id) {
+            issues.push(issue);
+          }
+        }
+
+        console.log(`Total extracted: ${issues.length} issues`);
+        return issues;
+      }
+
+      function runExtractionTest() {
+        console.clear();
+        const rows = findIssueRows();
+        const issues = [];
+
+        for (const row of rows) {
+          const issue = extractIssueData(row);
+          if (issue) {
+            issues.push(issue);
+          }
+        }
+
+        const resultsDiv = document.getElementById('results');
+
+        // Verify results
+        let passed = 0;
+        let failed = 0;
+        const expected = [
+          {
+            id: '1477',
+            status: 'Open',
+            submitter: 'mattheimer',
+            date: 'May 17, 2025'
+          },
+          {
+            id: '1476',
+            status: 'Closed',
+            submitter: 'johndoe',
+            date: 'May 15, 2025'
+          },
+          {
+            id: '1475',
+            status: 'Open',
+            submitter: 'developer',
+            date: 'May 10, 2025'
+          },
+          {
+            id: '1474',
+            status: 'Merged',
+            submitter: 'docs-writer',
+            date: 'Apr 28, 2025'
+          },
+          {
+            id: '1473',
+            status: 'Open',
+            submitter: 'bugreporter',
+            date: 'May 1, 2025'
+          }
+        ];
+
+        let verification =
+          '<h4>Verification Results:</h4><table border="1" cellpadding="8" cellspacing="0" style="width:100%;margin-bottom:15px;">';
+        verification +=
+          '<tr><th>Issue</th><th>Expected Status</th><th>Actual Status</th><th>Expected Submitter</th><th>Actual Submitter</th><th>Expected Date</th><th>Actual Date</th><th>Result</th></tr>';
+
+        for (const exp of expected) {
+          const found = issues.find((i) => i.id === exp.id);
+          if (found) {
+            const statusOk = found.status === exp.status;
+            const submitterOk = found.submitter === exp.submitter;
+            const dateOk =
+              found.submissionDate.includes(exp.date.split(',')[0]) ||
+              found.submissionDate === exp.date;
+
+            const allOk = statusOk && submitterOk && dateOk;
+
+            if (allOk) {
+              verification += `<tr style="background:#e6f4ea;"><td>#${exp.id}</td><td>${exp.status}</td><td>${found.status}</td><td>${exp.submitter}</td><td>${found.submitter}</td><td>${exp.date}</td><td>${found.submissionDate}</td><td class="test-result-pass">PASS</td></tr>`;
+              passed++;
+            } else {
+              verification += `<tr style="background:#ffebe9;"><td>#${exp.id}</td><td>${exp.status}</td><td style="color:${statusOk ? 'green' : 'red'}">${found.status}</td><td>${exp.submitter}</td><td style="color:${submitterOk ? 'green' : 'red'}">${found.submitter}</td><td>${exp.date}</td><td style="color:${dateOk ? 'green' : 'red'}">${found.submissionDate}</td><td class="test-result-fail">FAIL</td></tr>`;
+              failed++;
+            }
+          } else {
+            verification += `<tr style="background:#ffebe9;"><td>#${exp.id}</td><td>${exp.status}</td><td colspan="5" class="test-result-fail">NOT FOUND</td></tr>`;
+            failed++;
+          }
+        }
+
+        verification += '</table>';
+        verification += `<p><strong>Overall Result: ${passed}/${passed + failed} tests passed</strong></p>`;
+
+        if (failed === 0) {
+          verification += '<p class="test-result-pass">✓ All tests passed!</p>';
+        } else {
+          verification +=
+            '<p class="test-result-fail">✗ Some tests failed. Check console for details.</p>';
+        }
+
+        verification +=
+          '<h4>Raw JSON Output:</h4><pre>' +
+          JSON.stringify(issues, null, 2) +
+          '</pre>';
+
+        resultsDiv.innerHTML = verification;
+      }
+
+      // Run on load
+      runExtractionTest();
+    </script>
+  </body>
+</html>
