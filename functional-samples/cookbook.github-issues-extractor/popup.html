@@ -1,0 +1,70 @@
+<!doctype html>
+<html>
+  <head>
+    <title>GitHub Issues Extractor</title>
+    <style>
+      body {
+        width: 800px;
+        padding: 10px;
+        font-family: Arial, sans-serif;
+      }
+      h1 {
+        font-size: 18px;
+        margin-bottom: 10px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+      th {
+        background-color: #f2f2f2;
+      }
+      tr:nth-child(even) {
+        background-color: #f9f9f9;
+      }
+      .status-open {
+        color: #28a745;
+        font-weight: bold;
+      }
+      .status-closed {
+        color: #cb2431;
+        font-weight: bold;
+      }
+      #loading {
+        display: none;
+        text-align: center;
+        padding: 20px;
+      }
+      #error {
+        display: none;
+        color: #cb2431;
+        padding: 10px;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>GitHub Issues</h1>
+    <div id="loading">Loading issues...</div>
+    <div id="error"></div>
+    <table id="issuesTable">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Title</th>
+          <th>Submitter</th>
+          <th>Date</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="issuesBody"></tbody>
+    </table>
+    <script src="popup.js"></script>
+  </body>
+</html>
