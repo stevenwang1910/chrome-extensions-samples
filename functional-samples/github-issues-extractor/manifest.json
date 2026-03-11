@@ -4,7 +4,11 @@
   "version": "1.0",
   "description": "Extracts GitHub issues and displays them in a table",
   "permissions": ["activeTab", "scripting"],
+  "host_permissions": ["https://github.com/*"],
   "action": {
     "default_popup": "popup.html"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'none'"
   }
 }
