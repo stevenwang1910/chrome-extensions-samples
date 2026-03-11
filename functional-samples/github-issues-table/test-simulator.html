@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GitHub Issues Simulator</title>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+          Helvetica, Arial, sans-serif;
+        margin: 20px;
+        padding: 20px;
+        background: #f6f8fa;
+      }
+      .Box-row {
+        padding: 16px;
+        border: 1px solid #d1d9e0;
+        background: white;
+        margin-bottom: 8px;
+      }
+      .test-controls {
+        margin-bottom: 20px;
+        padding: 16px;
+        background: white;
+        border: 1px solid #d1d9e0;
+        border-radius: 6px;
+      }
+      button {
+        padding: 8px 16px;
+        background: #2da44e;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        margin-right: 10px;
+      }
+      .results {
+        margin-top: 20px;
+        padding: 16px;
+        background: white;
+        border: 1px solid #d1d9e0;
+        border-radius: 6px;
+        white-space: pre-wrap;
+        font-family: monospace;
+        font-size: 12px;
+      }
+      .status-open {
+        color: #2da44e;
+      }
+      .status-closed {
+        color: #cf222e;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>GitHub Issues Extractor Test Simulator</h1>
+
+    <div class="test-controls">
+      <button onclick="runTest()">Run Extraction Test</button>
+      <button onclick="clearResults()">Clear Results</button>
+    </div>
+
+    <h2>Simulated GitHub Issues</h2>
+
+    <div class="Box-row" data-testid="issue-row">
+      <div style="display: flex; align-items: center; gap: 8px">
+        <svg
+          aria-label="Open issue"
+          class="IssueOpened"
+          viewBox="0 0 16 16"
+          width="16"
+          height="16"
+        >
+          <circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" />
+        </svg>
+        <a
+          href="/GoogleChrome/chrome-extensions-samples/issues/1477"
+          data-hovercard-type="issue"
+        >
+          Update Chrome Extension API documentation
+        </a>
+      </div>
+      <div style="margin-top: 8px; color: #656d76; font-size: 12px">
+        opened by
+        <a href="/mattheimer" data-hovercard-type="user">mattheimer</a> on
+        <relative-time datetime="2025-05-19T12:00:00Z"
+          >May 19, 2025</relative-time
+        >
+      </div>
+    </div>
+
+    <div class="Box-row" data-testid="issue-row">
+      <div style="display: flex; align-items: center; gap: 8px">
+        <svg
+          aria-label="Closed issue"
+          class="IssueClosed"
+          viewBox="0 0 16 16"
+          width="16"
+          height="16"
+        >
+          <path d="M8 16A8 8 0 118 0a8 8 0 010 16z" fill="currentColor" />
+        </svg>
+        <a
+          href="/GoogleChrome/chrome-extensions-samples/issues/1476"
+          data-hovercard-type="issue"
+        >
+          Fix bug in content script injection
+        </a>
+      </div>
+      <div style="margin-top: 8px; color: #656d76; font-size: 12px">
+        opened by
+        <a href="/johnsmith" data-hovercard-type="user">johnsmith</a> on
+        <relative-time datetime="2025-05-18T12:00:00Z"
+          >May 18, 2025</relative-time
+        >
+      </div>
+    </div>
+
+    <div class="Box-row" data-testid="pull-request-row">
+      <div style="display: flex; align-items: center; gap: 8px">
+        <svg
+          aria-label="Pull request"
+          class="PullRequest"
+          viewBox="0 0 16 16"
+          width="16"
+          height="16"
+        >
+          <path d="M1 1h15v15H1V1z" fill="none" stroke="currentColor" />
+        </svg>
+        <a
+          href="/GoogleChrome/chrome-extensions-samples/pull/1475"
+          data-hovercard-type="pull_request"
+        >
+          Add new feature for Manifest V3 support
+        </a>
+      </div>
+      <div style="margin-top: 8px; color: #656d76; font-size: 12px">
+        opened by <a href="/janedoe" data-hovercard-type="user">janedoe</a> on
+        <relative-time datetime="2025-05-17T12:00:00Z"
+          >May 17, 2025</relative-time
+        >
+      </div>
+    </div>
+
+    <h2>Test Results:</h2>
+    <div id="results" class="results">
+      Click "Run Extraction Test" to see results...
+    </div>
+
+    <script>
+      // Copy of extraction logic from content.js for testing
+      function extractIssueData(row) {
+        try {
+          const issue = {
+            id: '',
+            title: '',
+            url: '',
+            submitter: 'Unknown',
+            submissionDate: 'Unknown',
+            status: 'Open'
+          };
+
+          const titleLink = row.querySelector(
+            'a[data-hovercard-type="issue"], a[id^="issue_"]'
+          );
+          if (titleLink) {
+            issue.title = titleLink.textContent.trim();
+            issue.url = 'https://github.com' + titleLink.getAttribute('href');
+            const idMatch = titleLink
+              .getAttribute('href')
+              .match(/\/issues\/(\d+)/);
+            if (idMatch) issue.id = idMatch[1];
+          }
+
+          const prLink = row.querySelector(
+            'a[data-hovercard-type="pull_request"]'
+          );
+          if (prLink && !issue.id) {
+            issue.title = prLink.textContent.trim();
+            issue.url = 'https://github.com' + prLink.getAttribute('href');
+            const prMatch = prLink.getAttribute('href').match(/\/pull\/(\d+)/);
+            if (prMatch) issue.id = prMatch[1];
+          }
+
+          const statusSvg = row.querySelector('svg');
+          if (statusSvg) {
+            const ariaLabel = statusSvg.getAttribute('aria-label') || '';
+            const className = statusSvg.getAttribute('class') || '';
+
+            if (
+              ariaLabel.toLowerCase().includes('closed') ||
+              className.includes('IssueClosed')
+            ) {
+              issue.status = 'Closed';
+            } else if (
+              ariaLabel.toLowerCase().includes('pull') ||
+              className.includes('PullRequest')
+            ) {
+              issue.status = 'PR';
+            } else if (
+              ariaLabel.toLowerCase().includes('open') ||
+              className.includes('IssueOpened')
+            ) {
+              issue.status = 'Open';
+            }
+          }
+
+          const userLinks = row.querySelectorAll(
+            'a[data-hovercard-type="user"]'
+          );
+          for (const userLink of userLinks) {
+            const href = userLink.getAttribute('href');
+            if (href && href.startsWith('/')) {
+              const username = href.substring(1);
+              if (username && username.length > 0 && !username.includes('/')) {
+                issue.submitter = username;
+                break;
+              }
+            }
+          }
+
+          const timeEl = row.querySelector('relative-time, time');
+          if (timeEl) {
+            const dt = timeEl.getAttribute('datetime');
+            if (dt) {
+              issue.submissionDate = new Date(dt).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+              });
+            }
+          }
+
+          return issue;
+        } catch (e) {
+          console.error('Error extracting issue:', e);
+          return null;
+        }
+      }
+
+      function findIssueRows() {
+        const selectors = [
+          'div[data-testid="issue-row"]',
+          'div[data-testid="pull-request-row"]',
+          'div.Box-row'
+        ];
+
+        for (const selector of selectors) {
+          const rows = document.querySelectorAll(selector);
+          if (rows.length > 0) {
+            return Array.from(rows);
+          }
+        }
+        return [];
+      }
+
+      function runTest() {
+        console.log('Running extraction test...');
+        const rows = findIssueRows();
+        const issues = [];
+
+        for (const row of rows) {
+          const issue = extractIssueData(row);
+          if (issue) {
+            issues.push(issue);
+          }
+        }
+
+        const resultsDiv = document.getElementById('results');
+        resultsDiv.innerHTML =
+          `<strong>Extracted ${issues.length} issues:</strong>\n\n` +
+          JSON.stringify(issues, null, 2);
+
+        // Validate results
+        let allPassed = true;
+        const validations = [];
+
+        if (issues.length !== 3) {
+          validations.push('❌ Expected 3 issues, got ' + issues.length);
+          allPassed = false;
+        } else {
+          validations.push('✅ Correct number of issues extracted');
+        }
+
+        if (issues[0]?.id === '1477') {
+          validations.push('✅ Issue ID extraction works');
+        } else {
+          validations.push('❌ Issue ID extraction failed');
+          allPassed = false;
+        }
+
+        if (issues[0]?.status === 'Open') {
+          validations.push('✅ Status detection works for Open');
+        } else {
+          validations.push('❌ Status detection failed for Open');
+          allPassed = false;
+        }
+
+        if (issues[1]?.status === 'Closed') {
+          validations.push('✅ Status detection works for Closed');
+        } else {
+          validations.push('❌ Status detection failed for Closed');
+          allPassed = false;
+        }
+
+        if (issues[2]?.status === 'PR') {
+          validations.push('✅ Status detection works for PR');
+        } else {
+          validations.push('❌ Status detection failed for PR');
+          allPassed = false;
+        }
+
+        if (issues[0]?.submitter === 'mattheimer') {
+          validations.push('✅ Submitter extraction works');
+        } else {
+          validations.push(
+            '❌ Submitter extraction failed: got ' + issues[0]?.submitter
+          );
+          allPassed = false;
+        }
+
+        if (issues[0]?.submissionDate.includes('May 19')) {
+          validations.push('✅ Date extraction works');
+        } else {
+          validations.push(
+            '❌ Date extraction failed: got ' + issues[0]?.submissionDate
+          );
+          allPassed = false;
+        }
+
+        resultsDiv.innerHTML +=
+          '\n\n--- VALIDATION RESULTS ---\n' + validations.join('\n');
+        resultsDiv.innerHTML +=
+          '\n\n' +
+          (allPassed ? '🎉 ALL TESTS PASSED!' : '⚠️ SOME TESTS FAILED!');
+      }
+
+      function clearResults() {
+        document.getElementById('results').innerHTML =
+          'Results cleared. Click "Run Extraction Test" to see results...';
+      }
+    </script>
+  </body>
+</html>
