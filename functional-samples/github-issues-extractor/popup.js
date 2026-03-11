@@ -1,10 +1,29 @@
 document.addEventListener('DOMContentLoaded', function() {
+  // 初始加载数据
+  loadIssuesData();
+  
+  // 刷新按钮点击事件
+  document.getElementById('refreshBtn').addEventListener('click', function() {
+    loadIssuesData();
+  });
+});
+
+function loadIssuesData() {
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
     const tab = tabs[0];
     if (!tab.url.includes('github.com/GoogleChrome/chrome-extensions-samples/issues')) {
       document.getElementById('loading').textContent = 'Please navigate to GitHub issues page';
       return;
     }
+
+    // 显示加载状态
+    document.getElementById('loading').style.display = 'block';
+    document.getElementById('content').style.display = 'none';
+    document.getElementById('debug').style.display = 'none';
+    
+    // 清空表格
+    const tbody = document.querySelector('#issuesTable tbody');
+    tbody.innerHTML = '';
 
     chrome.scripting.executeScript({
       target: {tabId: tab.id},
@@ -14,7 +33,6 @@ document.addEventListener('DOMContentLoaded', function() {
       document.getElementById('content').style.display = 'block';
       
       const issues = results[0].result;
-      const tbody = document.querySelector('#issuesTable tbody');
       
       // Show debug info
       const debugDiv = document.getElementById('debug');
@@ -37,100 +55,84 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     });
   });
-});
+}
 
 function extractIssues() {
   console.log('extractIssues called');
   const issues = [];
   
-  // Try to find issues using various approaches
-  
-  // Approach 1: Check if page is static HTML from the saved file
-  const bodyText = document.body.textContent || '';
-  const issueRegex = /Status: ([^\n]+)\.\s*#(\d+)\s+In GoogleChrome\/chrome-extensions-samples;\s*·\s*(\S+)\s+opened\s+on\s+(\w+ \d+, \d+)/g;
-  
-  let match;
-  while ((match = issueRegex.exec(bodyText)) !== null) {
-    issues.push({
-      id: '#' + match[2],
-      status: match[1],
-      title: 'Issue #' + match[2],
-      author: match[3],
-      date: match[4]
-    });
-  }
-  
-  console.log('Found', issues.length, 'issues using regex approach');
-  
-  // If no issues found with regex, try DOM approach
-  if (issues.length === 0) {
-    // Try multiple selectors to find issue elements
-    const selectors = [
-      'div.js-issue-row',
-      'div.js-discussion-item',
-      'div.issue-list-item',
-      'div[id^="issue_"]',
-      'article[id^="issue_"]',
-      'ul.js-issue-association-list li',
-      'div[data-hovercard-type="issue"]'
-    ];
-    
-    let allElements = [];
-    selectors.forEach(selector => {
-      const elements = document.querySelectorAll(selector);
-      console.log(`Found ${elements.length} elements for selector: ${selector}`);
-      allElements = allElements.concat(Array.from(elements));
-    });
-    
-    // Remove duplicates
-    const uniqueElements = [...new Set(allElements)];
-    console.log('Total unique elements:', uniqueElements.length);
-    
-    uniqueElements.forEach(element => {
-      // Try multiple ways to find each element
-      const titleElement = 
-        element.querySelector('a.js-issue-title') || 
-        element.querySelector('a[data-hovercard-type="issue"]') ||
-        element.querySelector('a.issue-title') ||
-        element.querySelector('a');
-        
-      const idElement = 
-        element.querySelector('span.js-issue-number') ||
-        element.querySelector('span.issue-number') ||
-        element.querySelector('a[href*="/issues/"]');
-        
-      const statusElement = 
-        element.querySelector('span.State') ||
-        element.querySelector('span.label') ||
-        element.querySelector('span[data-state]');
-        
-      const authorElement = 
-        element.querySelector('a.author') ||
-        element.querySelector('a[data-hovercard-type="user"]') ||
-        element.querySelector('span.author a');
-        
-      const timeElement = 
-        element.querySelector('time') ||
-        element.querySelector('relative-time');
+  // Approach 1: Extract from React embedded JSON (modern GitHub)
+  const embeddedDataScript = document.querySelector('script[data-target="react-app.embeddedData"]');
+  if (embeddedDataScript) {
+    try {
+      const embeddedData = JSON.parse(embeddedDataScript.textContent);
+      console.log('Found embedded data:', embeddedData);
       
-      console.log('Element check:', {title: !!titleElement, id: !!idElement, status: !!statusElement, author: !!authorElement, time: !!timeElement});
-      
-      if (titleElement && idElement) {
-        let id = idElement.textContent ? idElement.textContent.trim() : '';
-        if (!id && idElement.href) {
-          id = idElement.href.match(/\d+/)[0];
+      // Navigate through the preloaded queries to find issues
+      if (embeddedData.payload && embeddedData.payload.preloadedQueries) {
+        for (const query of embeddedData.payload.preloadedQueries) {
+          if (query.result && query.result.data && query.result.data.repository && query.result.data.repository.search) {
+            const edges = query.result.data.repository.search.edges;
+            if (edges && edges.length > 0) {
+              edges.forEach(edge => {
+                if (edge.node && edge.node.__typename === 'Issue') {
+                  const issue = edge.node;
+                  issues.push({
+                    id: '#' + issue.number,
+                    status: issue.state === 'OPEN' ? 'Open' : issue.state === 'CLOSED' ? 'Closed' : issue.state,
+                    title: issue.title,
+                    author: issue.author ? issue.author.login : 'Unknown',
+                    date: (issue.state === 'CLOSED' && issue.closedAt ? issue.closedAt : issue.createdAt) ? (issue.state === 'CLOSED' && issue.closedAt ? issue.closedAt : issue.createdAt).split('T')[0] : 'Unknown'
+                  });
+                }
+              });
+            }
+          }
         }
-        
-        issues.push({
-          id: id,
-          status: statusElement ? statusElement.textContent.trim() : 'Unknown',
-          title: titleElement.textContent.trim(),
-          author: authorElement ? authorElement.textContent.trim() : 'Unknown',
-          date: timeElement ? (timeElement.getAttribute('datetime') || timeElement.getAttribute('title')).split('T')[0] : 'Unknown'
-        });
       }
-    });
+      
+      console.log('Found', issues.length, 'issues using embedded JSON approach');
+      if (issues.length > 0) {
+        return issues;
+      }
+    } catch (e) {
+      console.error('Error parsing embedded JSON:', e);
+    }
   }
+  
+  // Approach 2: Try DOM approach for older GitHub pages
+  const selectors = [
+    'div.js-issue-row',
+    'div[data-hovercard-type="issue"]'
+  ];
+  
+  let allElements = [];
+  selectors.forEach(selector => {
+    const elements = document.querySelectorAll(selector);
+    console.log(`Found ${elements.length} elements for selector: ${selector}`);
+    allElements = allElements.concat(Array.from(elements));
+  });
+  
+  const uniqueElements = [...new Set(allElements)];
+  console.log('Total unique elements:', uniqueElements.length);
+  
+  uniqueElements.forEach(element => {
+    const titleElement = element.querySelector('a[data-hovercard-type="issue"]');
+    const idElement = element.querySelector('span[id^="issue_"]');
+    const statusElement = element.querySelector('span.State');
+    const authorElement = element.querySelector('a[data-hovercard-type="user"]');
+    const timeElement = element.querySelector('relative-time');
+    
+    if (titleElement && idElement) {
+      issues.push({
+        id: idElement.textContent ? idElement.textContent.trim() : '#' + titleElement.href.split('/').pop(),
+        status: statusElement ? statusElement.textContent.trim() : 'Unknown',
+        title: titleElement.textContent.trim(),
+        author: authorElement ? authorElement.textContent.trim() : 'Unknown',
+        date: timeElement ? timeElement.getAttribute('datetime').split('T')[0] : 'Unknown'
+      });
+    }
+  });
   
   console.log('Returning issues:', issues.length);
   return issues;
